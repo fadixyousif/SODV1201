@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px
+}
+
+ul.nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  background-color: #333;
+}
+
+ul.nav .company-name {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 24px 26px;
+  text-decoration: none;
+}
+
+ul.nav .company-name > a {
+  color: white;
+  text-decoration: none;
+}
+
+ul.nav .company-name > a:hover {
+  color: inherit;
+}
+
+ul.nav li {
+  flex: none;
+}
+
+ul.nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 24px 26px;
+  text-decoration: none;
+}
+
+ul.nav li a:hover:not(.active) {
+  background-color: #e20d0d;
+}
+
+ul.nav li a.active {
+  background-color: #04AA6D;
+  border-radius: 5px;
+}
+
+ul.nav .navigation {
+  margin-left: auto;
+  padding-right: 15px;
+  display: flex;
+}
+
+
+/* Footer CSS */
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+.footer-content > footer {
+  margin-top: auto;   
+  background: #333;
+  color: white;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  width: 100%;
+
+}
+
+.footer-content > footer > p {
+  text-align: center;
+}

@@ -1,290 +1,86 @@
-* {
-    margin: 0;
-    padding: 0;
+body {
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 25px
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px
 }
 
-/* Navigation CSS */
-.navigation > ul {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    list-style-type: none;
-    overflow: hidden;
-    background-color: gray;
-    padding: 10px;
-}
-.navigation > ul > li {
-    display: inline-block;
+ul.nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  background-color: #333;
 }
 
-.navigation > ul > li > a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-.navigation > ul > li > a.active {
-    background-color: #038857;
+ul.nav .company-name {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 24px 26px;
+  text-decoration: none;
 }
 
-.navigation > ul > li > a:hover {
-    background-color: #111;
+ul.nav .company-name > a {
+  color: white;
+  text-decoration: none;
 }
 
-/* Profile CSS */
-.profile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-    background-color: #f1f1f1;
-    padding: 50px;
-    margin-top: 3%;
-    width: 30%;
-    border: 5px solid #333;
-    border-radius: 30px;
+ul.nav .company-name > a:hover {
+  color: inherit;
 }
 
-.profile > .profile-content > .profile-image {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    border: 5px solid #333;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    margin-bottom: 10px;
-    gap: 10px;
-    width: 50%;
+ul.nav li {
+  flex: none;
 }
 
-.profile > .profile-content > .profile-image > img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
+ul.nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 24px 26px;
+  text-decoration: none;
 }
 
-.profile > .profile-content > .profile-info > h1, h3, h4, p {
-    text-align: center;
+ul.nav li a:hover:not(.active) {
+  background-color: #e20d0d;
 }
 
-.profile > .profile-content > .profile-image {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 10px;
+ul.nav li a.active {
+  background-color: #04AA6D;
+  border-radius: 5px;
 }
 
-
-
-/* Mark To Grade CSS */
-.mtg {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-    background-color: #f1f1f1;
-    padding: 50px;
-    margin-top: 10%;
-    width: 25%;
-    border: 5px solid #333;
-    border-radius: 30px;
+ul.nav .navigation {
+  margin-left: auto;
+  padding-right: 15px;
+  display: flex;
 }
 
-.mtg > .mtg-content > .mtg-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.mtg > .mtg-content > .mtg-info > button {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    background-color: #04AA6D;
-}
-
-.mtg > .mtg-content > .mtg-info > input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-.mtg > .mtg-content > .mtg-info > h1, h3, p {
-    text-align: center;
-}
-
-/* Staff CSS */
-.staff > .staff-content {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    
-}
-
-.sortings {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.sortings > button {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-  
-.sortings > .sortByName {background-color: #04AA6D;} /* Green */
-.sortings > .sortBySalary {background-color: #008CBA;} 
-
-.staff > .staff-content > .staff-information {
-    background-color: #f1f1f1;
-    margin: 10px;
-    text-align: center;
-    padding: 10px;
-    font-size: 30px;
-    border: 5px solid #333;
-    flex: 1 1 20%; /* Allows items to grow equally but start at 20% width */
-    box-sizing: border-box; /* Ensures padding and border are included in the size calculation */
-}
-
-.staff > .staff-content > .staff-information > .staff-name {
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.staff > .staff-content > .staff-information > .staff-position {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.staff > .staff-content > .staff-information > .staff-id {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.staff > .staff-content > .staff-information > .staff-salary {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.staff > .staff-content > .staff-information > .staff-hire {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.staff > .staff-content > .staff-information > .staff-city {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.staff > .staff-content > .staff-information > h1, h3, p {
-    text-align: center;
-}
-
-/* Weather CSS */
-
-/* Mark To Grade CSS */
-.weather {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: center;
-    background-color: #f1f1f1;
-    padding: 50px;
-    margin-top: 10%;
-    width: 25%;
-    border: 5px solid #333;
-    border-radius: 30px;
-}
-
-.weather > .weather-content > .weather-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.weather > .weather-content > .weather-info > button {
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    background-color: #04AA6D;
-}
-
-.weather > .weather-content > .weather-info > input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-  }
-
-.weather > .weather-content > .weather-info > h1, h3, p {
-    text-align: center;
-}
 
 /* Footer CSS */
 .footer-content {
-    display: flex;
-    flex-direction: column;
-    margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
 }
 
 .footer-content > footer {
-    margin-top: auto;   
-    background: #333;
-    color: white;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    width: 100%;
+  margin-top: auto;   
+  background: #333;
+  color: white;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  width: 100%;
 
 }
 
 .footer-content > footer > p {
-    text-align: center;
-}
-
-/* Error Message CSS */
-.error-message {
-    color: red;
-    font-weight: bold;
+  text-align: center;
 }

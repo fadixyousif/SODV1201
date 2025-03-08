@@ -1,13 +1,11 @@
 body {
   margin: 0;
   padding: 0;
-}
-
-html, body {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 25px
+  min-height: 100vh;
+  height: 100%;
+  gap: 25px;
 }
 
 ul.nav {
@@ -63,6 +61,64 @@ ul.nav .navigation {
   display: flex;
 }
 
+
+/* .categories {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  background-color: #f1f1f1;
+  padding: 50px;
+  margin-top: 3%;
+  width: 30%;
+  border: 5px solid #333;
+  border-radius: 30px;
+} */
+
+.categories {
+  flex: 1; /* This makes it take up available space between header and footer */
+  display: flex;
+  align-items: center; /* Vertical centering */
+  justify-content: center; /* Horizontal centering */
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.categories > .category-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.categories > .category-content > .category-info {
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f1f1;
+  margin: 10px;
+  text-align: center;
+  padding: 10px;
+  font-size: 20px;
+  border: 5px solid #333;
+  flex: 1 0 300px;
+  box-sizing: border-box;
+  min-width: 300px;
+  max-width: 100%;
+}
+.categories > .category-content > .category-info > h1, h3, h4, p {
+  text-align: center;
+}
+
+.categories > .category-content > .category-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 10px;
+}
 
 /* Footer CSS */
 .footer-content {

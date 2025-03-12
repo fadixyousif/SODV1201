@@ -153,6 +153,70 @@ ul.nav .navigation {
   align-items: center;
   padding-bottom: 10px;
 } */
+.auth-body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+        .container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Increased width */
+    padding: 30px; /* Added more padding */
+    text-align: center;
+}
+
+/* Rest of your original styles */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.toggle {
+    margin-top: 15px;
+    color: #007BFF;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.toggle:hover {
+    color: #0056b3;
+}
+
 
 /* Footer CSS */
 .footer-content {

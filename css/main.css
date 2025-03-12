@@ -104,7 +104,7 @@ ul.nav .navigation {
   padding: 10px;
   font-size: 20px;
   border: 5px solid #333;
-  flex: 1 0 45%;
+  flex: 1 0 40%;
   box-sizing: border-box;
   min-width: 500px;
   max-width: 600px;
@@ -130,6 +130,29 @@ ul.nav .navigation {
   max-height: 200px; /* Limit height to prevent overflow */
   object-fit: cover; /* Ensures image covers area without distortion */
   max-height: 350px;
+}
+
+.categories > .category-content > .category-info > .button-container {
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center;
+  gap: 50px; /* Space between buttons */
+  width: 100%;
+  margin-top: 20px;
+}
+
+.categories > .category-content > .category-info > .button-container> a {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  text-decoration: none;
+}
+
+.categories > .category-content > .category-info > .button-container > a:hover {
+  background-color: #037d50;
 }
 
 /* Responsive adjustments - only apply on very small screens */

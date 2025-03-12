@@ -125,9 +125,10 @@ ul.nav .navigation {
 }
 
 .categories > .category-content > .category-info > .category-data > .category-lists > img {
-  width: 100%; /* Make image responsive */
+  width: 150px;   
+  height: 150px;
+  /* width: 100%; Make image responsive */
   height: auto; /* Maintain aspect ratio */
-  max-height: 200px; /* Limit height to prevent overflow */
   object-fit: cover; /* Ensures image covers area without distortion */
   max-height: 350px;
 }

@@ -125,8 +125,8 @@ ul.nav .navigation {
 }
 
 .categories > .category-content > .category-info > .category-data > .category-lists > img {
-  width: 150px;   
-  height: 150px;
+  width: 128px;   
+  height: 128px;
   /* width: 100%; Make image responsive */
   height: auto; /* Maintain aspect ratio */
   object-fit: cover; /* Ensures image covers area without distortion */

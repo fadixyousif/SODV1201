@@ -155,15 +155,56 @@ ul.nav .navigation {
 .categories > .category-content > .category-info > .button-container > a:hover {
   background-color: #037d50;
 }
+@media (max-width: 1135px) {
+  /* center the categories */
 
+  .categories > .category-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .categories > .category-content > .category-info {
+    flex: none; /* Prevent stretching */
+    width: 80%; /* Adjust width to fit */
+    max-width: 600px; /* Prevent oversizing */
+    margin: auto; /* Center horizontally */
+  }
+}
 /* Responsive adjustments - only apply on very small screens */
 @media (max-width: 600px) {
+
+  .categories > .category-content > .category-info {
+    flex: 1 1 100%; /* Make it full width on small screens */
+    min-width: auto; /* Allow it to shrink */
+    font-size: 16px; /* Adjust font size */
+    margin-left: auto;
+    margin-right: auto;
+  }
   .categories > .category-content > .category-info > .category-data {
       flex-direction: column;
   }
   
   .categories > .category-content > .category-info > .category-data > .category-lists {
       max-width: 90%;
+  }
+  ul.nav {
+    display: flex;
+    flex-direction: column;
+  }
+  ul.nav .navigation {
+    margin-left: auto;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  
+  ul.nav li {
+    flex: none;
+    align-items: center;
   }
 }
 

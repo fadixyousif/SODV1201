@@ -8,7 +8,7 @@ body {
   gap: 25px;
 }
 
-ul.nav {
+.nav {
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -17,7 +17,7 @@ ul.nav {
   background-color: #333;
 }
 
-ul.nav .company-name {
+.nav > .company-name {
   color: white;
   font-size: 20px;
   font-weight: bold;
@@ -25,20 +25,26 @@ ul.nav .company-name {
   text-decoration: none;
 }
 
-ul.nav .company-name > a {
+.nav > .company-name > a {
   color: white;
   text-decoration: none;
 }
 
-ul.nav .company-name > a:hover {
+.nav > .company-name > a:hover {
   color: inherit;
 }
 
-ul.nav li {
+.nav > .navigation {
+  margin-left: auto;
+  padding-right: 15px;
+  display: flex;
+}
+
+.nav > .navigation > li {
   flex: none;
 }
 
-ul.nav li a {
+.nav > .navigation > li > a {
   display: block;
   color: white;
   text-align: center;
@@ -46,36 +52,14 @@ ul.nav li a {
   text-decoration: none;
 }
 
-ul.nav li a:hover:not(.active) {
+.nav > .navigation > li > a:hover:not(.active) {
   background-color: #e20d0d;
 }
 
-ul.nav li a.active {
+.nav > .navigation > li > a.active {
   background-color: #04AA6D;
   border-radius: 5px;
 }
-
-ul.nav .navigation {
-  margin-left: auto;
-  padding-right: 15px;
-  display: flex;
-}
-
-
-/* .categories {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: center;
-  background-color: #f1f1f1;
-  padding: 50px;
-  margin-top: 3%;
-  width: 30%;
-  border: 5px solid #333;
-  border-radius: 30px;
-} */
 
 .categories {
   flex: 1; /* This makes it take up available space between header and footer */
@@ -98,17 +82,20 @@ ul.nav .navigation {
 .categories > .category-content > .category-info {
   align-items: center;
   justify-content: center;
-  background-color: #f1f1f1;
+  background: #ffffff;
   margin: 10px;
   text-align: center;
-  padding: 10px;
+  padding: 20px;
   font-size: 20px;
-  border: 5px solid #333;
+  border: 3px solid #04AA6D;
+  border-radius: 12px;
   flex: 1 0 40%;
   box-sizing: border-box;
   min-width: 500px;
   max-width: 600px;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
 }
 
 .categories > .category-content > .category-info > .category-data {
@@ -142,19 +129,116 @@ ul.nav .navigation {
   margin-top: 20px;
 }
 
-.categories > .category-content > .category-info > .button-container> a {
-  background-color: #04AA6D;
+.categories > .category-content > .category-info > .button-container > a {
+  background: #04AA6D;
   color: white;
   padding: 14px 20px;
   border: none;
   cursor: pointer;
   width: 50%;
   text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 .categories > .category-content > .category-info > .button-container > a:hover {
-  background-color: #037d50;
+  background: #037d50;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
+
+/* Center Contact Container */
+.contact-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+/* Contact Box Styling */
+.contact-container > .contact-info {
+  background: linear-gradient(135deg, #ffffff, #f1f1f1);
+  text-align: center;
+  padding: 25px;
+  font-size: 18px;
+  border: 3px solid #04AA6D;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Header */
+.contact-container > .contact-info > h2 {
+  color: #04AA6D;
+  margin-bottom: 10px;
+}
+
+.contact-container > .contact-info > p {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Contact Form */
+.contact-container > .contact-info > .contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Input Fields */
+.contact-container > .contact-info > .contact-form input,
+.contact-container > .contact-info > .contact-form textarea {
+  width: 96%;
+  padding: 10px;
+  border: 2px solid #04AA6D;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Form Row for Name/Email/Phone */
+.contact-container > .contact-info > .contact-form .form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+/* Subject Field */
+.contact-container > .contact-info > .contact-form .subject-field {
+  margin-bottom: 0;
+}
+
+/* Textarea */
+.contact-container > .contact-info > .contact-form .message-field {
+  resize: none;
+  height: 100px;
+  margin-bottom: 0;
+}
+
+/* Submit Button */
+.contact-container > .contact-info > .contact-form .submit-btn {
+  background: #037d50;
+  color: white;
+  padding: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out;
+  width: 150px;
+  margin: 0 auto;
+}
+
+/* Button Hover */
+.contact-container > .contact-info > .contact-form .submit-btn:hover {
+  background: #035a3a;
+}
+
+
 @media (max-width: 1135px) {
   /* center the categories */
 
@@ -188,11 +272,13 @@ ul.nav .navigation {
   .categories > .category-content > .category-info > .category-data > .category-lists {
       max-width: 90%;
   }
-  ul.nav {
+  
+  .nav {
     display: flex;
     flex-direction: column;
   }
-  ul.nav .navigation {
+  
+  .nav > .navigation {
     margin-left: auto;
     padding-right: 15px;
     display: flex;
@@ -201,11 +287,15 @@ ul.nav .navigation {
     margin-right: auto;
   }
   
-  
-  ul.nav li {
+  .nav > .navigation > li {
     flex: none;
     align-items: center;
   }
+
+  .contact-container > .contact-info > .contact-form > .form-row {
+    flex-direction: column;
+  }
+  
 }
 
 .categories > .category-content > .category-info > h1, h3, h4, p {

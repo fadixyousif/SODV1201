@@ -7,6 +7,7 @@
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/management.css">
 </head>
 <body>
     <ul class="nav">
@@ -18,6 +19,73 @@
             <li><a href="authentication.html">Logout</a></li>
         </div>
     </ul>
+
+    <div class="main">
+        <div class="form">
+            <div class="form-box">
+                <h2>Spaces</h2>
+                <label for="type-space">Type:</label>
+                <select id="type-space">
+                    <option>Office Room</option>
+                    <option>Kitchen Space</option>
+                    <option>Training Room</option>
+                </select>
+
+                <label>Image:</label>
+                <div class="image-upload" id="drop-area-space">
+                    <p>Drag & drop image here or click to select</p>
+                    <input type="file" id="fileinput-space" accept="image/*"  hidden>
+                    <img id="preview-space" src="" alt="image preview" style="display: none;">
+                </div>
+
+                <label>Description:</label>
+                <textarea id="description-space" placeholder="Write a description of the space here..."></textarea>
+
+                <label>Price:</label>
+                <input type="number" id="price-space" placeholder="$ per hour">
+
+                <label>Location:</label>
+                <input type="text" id="location-space" placeholder="Full address of the space.">
+
+                <button class="post">Post Space</button>
+            </div>
+
+            <div class="form-box">
+                <h2>Equipment</h2>
+
+                <label for="type-equipment">Type:</label>
+                <select id="type-equipment">
+                    <option>Printers</option>
+                    <option>Copiers</option>
+                    <option>Stationeries</option>
+                </select>
+
+                <label>Image:</label>
+                <div class="image-upload" id="drop-area-equipment">
+                    <p>Drag & drop image here or click to select</p>
+                    <input type="file" id="fileinput-equipment" accept="image/*" hidden>
+                    <img id="preview-equipment" src="" alt="image preview" style="display: none;">
+                </div>
+
+                <label>Description:</label>
+                <textarea id="description-equipment" placeholder="Write a description of the equipment here..."></textarea>
+
+                <label>Price:</label>
+                <input type="number" id="price-equipment" placeholder="$ per hour">
+
+                <label>Location:</label>
+                <input type="text" id="location-equipment" placeholder="Full address of the equipment">
+
+                <button class="post">Post Equipment</button>
+            </div>
+        </div>
+
+        <div><h2>Available Listings:</h2></div>
+
+        <div class="listing-container"> 
+            <!-- Listings will be dynamically added here -->
+        </div>
+    </div>
 
     <div class="footer-content">
         <footer>

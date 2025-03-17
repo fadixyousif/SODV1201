@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us</title>
+    <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/main.js"></script>
     <link rel="stylesheet" href="./css/main.css">
 </head>
@@ -17,6 +18,26 @@
             <li><a href="authentication.html" class="active">Login/Signup</a></li>
         </div>
     </ul>
+
+    <div class="contact-container">
+        <div class="contact-info">
+            <h2>Contact US</h2>
+            
+            <div class="contact-form">
+                <div class="form-row">
+                    <input type="text" placeholder="Name" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="tel" placeholder="Phone" required>
+                </div>
+                
+                <input type="text" placeholder="Subject" required class="subject-field">
+                <textarea placeholder="Message" required class="message-field"></textarea>
+                
+                <button type="submit" class="submit-btn">Submit</button>
+            </div>
+        </div>
+    </div>
+    
 
     <div class="footer-content">
         <footer>

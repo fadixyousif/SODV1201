@@ -310,22 +310,52 @@ body {
 } */
 
 /* Footer CSS */
+/* Footer CSS */
 .footer-content {
   display: flex;
   flex-direction: column;
   margin-top: auto;
+  width: 100%; /* Ensure it takes full width */
+  overflow: hidden; /* Prevent overflow */
 }
 
 .footer-content > footer {
-  margin-top: auto;   
+  display: flex;
+  justify-content: space-between; /* Align items to the left and right */
+  align-items: center;
   background: #333;
   color: white;
-  padding-top: 1em;
-  padding-bottom: 1em;
+  padding: 1em;
   width: 100%;
-
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .footer-content > footer > p {
-  text-align: center;
+  margin: 0; /* Remove default margin */
+}
+
+.footer-content > footer > .social-icons {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+.footer-content > footer > .social-icons > button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-content > footer > .social-icons > button:hover {
+  background: #ddd;
+}
+
+.footer-content > footer > .social-icons > button > i {
+  font-size: 1.2em;
 }

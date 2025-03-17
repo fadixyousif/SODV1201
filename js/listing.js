@@ -1,17 +1,17 @@
 const filterTypes = ['price', 'distance', 'rating'];
-    
+
 filterTypes.forEach(filterType => {
   const rangeInputs = document.querySelectorAll(`.range-input input[data-filter="${filterType}"]`);
   const progress = document.querySelector(`.${filterType}-slider .progress`);
   const minValueEl = document.querySelector(`#min-${filterType}`);
   const maxValueEl = document.querySelector(`#max-${filterType}`);
   
-  let minVal = parseInt(rangeInputs[0].value);
-  let maxVal = parseInt(rangeInputs[1].value);
+  let minVal = parseFloat(rangeInputs[0].value);
+  let maxVal = parseFloat(rangeInputs[1].value);
   
   // Set initial progress bar position
-  progress.style.left = (minVal / rangeInputs[0].max) * 100 + "%";
-  progress.style.right = 100 - (maxVal / rangeInputs[1].max) * 100 + "%";
+  progress.style.left = ((minVal - rangeInputs[0].min) / (rangeInputs[0].max - rangeInputs[0].min)) * 100 + "%";
+  progress.style.right = 100 - ((maxVal - rangeInputs[1].min) / (rangeInputs[1].max - rangeInputs[1].min)) * 100 + "%";
   
   rangeInputs.forEach(input => {
     input.addEventListener("input", e => {
@@ -42,8 +42,8 @@ filterTypes.forEach(filterType => {
       }
       
       // Update progress bar
-      progress.style.left = (minVal / rangeInputs[0].max) * 100 + "%";
-      progress.style.right = 100 - (maxVal / rangeInputs[1].max) * 100 + "%";
+      progress.style.left = ((minVal - rangeInputs[0].min) / (rangeInputs[0].max - rangeInputs[0].min)) * 100 + "%";
+      progress.style.right = 100 - ((maxVal - rangeInputs[1].min) / (rangeInputs[1].max - rangeInputs[1].min)) * 100 + "%";
     });
   });
 });

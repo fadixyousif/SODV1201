@@ -13,79 +13,242 @@
         <span class="company-name"><a href="#">RentableBnB</a></span>
         <div class="navigation">
             <li><a href="/">Home</a></li>
-            <div class="dropdown">
-                <li class="dropbtn"><a href="#">Listing</a></li>
-                <div class="main-container">
-                    <div class="dropdown-content">
-
-                        <div class="filters-container">
-                            <h2>Filters</h2>
-                            
-                            <!-- Price Filter -->
-                            <div class="filter-section">
-                              <h3>Price Range</h3>
-                              <div class="slider price-slider">
-                                <div class="progress"></div>
-                              </div>
-                              <div class="range-input">
-                                <input type="range" class="range-min" min="0" max="1000" value="250" step="10" data-filter="price">
-                                <input type="range" class="range-max" min="0" max="1000" value="750" step="10" data-filter="price">
-                              </div>
-                              <div class="values">
-                                <p>Min: <span class="price-display" id="min-price">$250</span></p>
-                                <p>Max: <span class="price-display" id="max-price">$750</span></p>
-                              </div>
-                            </div>
-                            
-                            <!-- Distance Filter -->
-                            <div class="filter-section">
-                              <h3>Distance (miles)</h3>
-                              <div class="slider distance-slider">
-                                <div class="progress"></div>
-                              </div>
-                              <div class="range-input">
-                                <input type="range" class="range-min" min="0" max="50" value="5" step="1" data-filter="distance">
-                                <input type="range" class="range-max" min="0" max="50" value="25" step="1" data-filter="distance">
-                              </div>
-                              <div class="values">
-                                <p>Min: <span class="distance-display" id="min-distance">5</span> miles</p>
-                                <p>Max: <span class="distance-display" id="max-distance">25</span> miles</p>
-                              </div>
-                            </div>
-                            
-                            <!-- Rating Filter -->
-                            <div class="filter-section">
-                              <h3>Rating</h3>
-                              <div class="slider rating-slider">
-                                <div class="progress"></div>
-                              </div>
-                              <div class="range-input">
-                                <input type="range" class="range-min" min="1" max="5" value="3" step="0.5" data-filter="rating">
-                                <input type="range" class="range-max" min="1" max="5" value="5" step="0.5" data-filter="rating">
-                              </div>
-                              <div class="values">
-                                <p>Min: <span class="rating-display" id="min-rating">3</span> ★</p>
-                                <p>Max: <span class="rating-display" id="max-rating">5</span> ★</p>
-                              </div>
-                              <div class="rating-stars">
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                                <span class="star active">★</span>
-                              </div>
-                            </div>
-                            
-                            <button class="apply-btn">Apply Filters</button>
-                          </div>
-                    </div>
-            </div>
-            </div>
-            </div>
+            <li><a href="listing.html">Listing</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="authentication.html" class="active">Login/Signup</a></li>
         </div>
     </ul>
+
+    
+    <div class="search-container">
+      <div class="search-bar">
+          <input type="text" placeholder="Search">
+          <div class="dropdown">
+              <li class="dropbtn"><a href="#" class="filters-btn">Filters</a></li>
+              <div class="main-container">
+                  <div class="dropdown-content">
+                      <div class="filters-container">
+                          <h2>Filters</h2>
+
+                          <!-- Price Filter -->
+                          <div class="filter-section">
+                              <h3>Price Range</h3>
+                              <div class="slider price-slider">
+                                  <div class="progress"></div>
+                              </div>
+                              <div class="range-input">
+                                  <input type="range" class="range-min" min="0" max="1000" value="250" step="10" data-filter="price">
+                                  <input type="range" class="range-max" min="0" max="1000" value="750" step="10" data-filter="price">
+                              </div>
+                              <div class="values">
+                                  <p>Min: <span class="price-display" id="min-price">$250</span></p>
+                                  <p>Max: <span class="price-display" id="max-price">$750</span></p>
+                              </div>
+                          </div>
+
+                          <!-- Distance Filter -->
+                          <div class="filter-section">
+                              <h3>Distance (miles)</h3>
+                              <div class="slider distance-slider">
+                                  <div class="progress"></div>
+                              </div>
+                              <div class="range-input">
+                                  <input type="range" class="range-min" min="0" max="50" value="5" step="1" data-filter="distance">
+                                  <input type="range" class="range-max" min="0" max="50" value="25" step="1" data-filter="distance">
+                              </div>
+                              <div class="values">
+                                  <p>Min: <span class="distance-display" id="min-distance">5</span> miles</p>
+                                  <p>Max: <span class="distance-display" id="max-distance">25</span> miles</p>
+                              </div>
+                          </div>
+
+                          <!-- Rating Filter -->
+                          <div class="filter-section">
+                              <h3>Rating</h3>
+                              <div class="slider rating-slider">
+                                  <div class="progress"></div>
+                              </div>
+                              <div class="range-input">
+                                  <input type="range" class="range-min" min="1" max="5" value="3" step="0.5" data-filter="rating">
+                                  <input type="range" class="range-max" min="1" max="5" value="5" step="0.5" data-filter="rating">
+                              </div>
+                              <div class="values">
+                                  <p>Min: <span class="rating-display" id="min-rating">3</span> ★</p>
+                                  <p>Max: <span class="rating-display" id="max-rating">5</span> ★</p>
+                              </div>
+                              <div class="rating-stars">
+                                  <span class="star active">★</span>
+                                  <span class="star active">★</span>
+                                  <span class="star active">★</span>
+                                  <span class="star active">★</span>
+                                  <span class="star active">★</span>
+                              </div>
+                          </div>
+
+                          <button class="apply-btn">Apply Filters</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="category-buttons">
+          <button>Meeting Rooms</button>
+          <button>Desks</button>
+          <button>Offices</button>
+          <button>Printers</button>
+          <button>Copiers</button>
+          <button>Stationeries</button>
+      </div>
+  </div>
+
+
+  <div class="item-grid">
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+      <div class="item">
+          <div class="item-picture">Item Picture</div>
+          <div class="item-details">
+              <div class="detail-row">
+                  <span class="detail-label">Location</span>
+                  <span class="detail-rating">Rating</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Distance</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Date</span>
+              </div>
+              <div class="detail-row">
+                  <span class="detail-label">Price</span>
+              </div>
+          </div>
+      </div>
+  </div>
 
     <div class="footer-content">
         <footer>

@@ -4,14 +4,15 @@ $(document).ready(function () {
         const $formBox = $(this).closest(".form-box"); // Get the closest form box
 
         // Select the input fields dynamically
-        const type = $formBox.find("select").val();
-        const description = $formBox.find("textarea").val();
-        const price = $formBox.find("input[type='number']").val();
-        const location = $formBox.find("input[type='text']").val();
+        const type = $formBox.find("select#type").val();
+        const description = $formBox.find("textarea#description").val();
+        const price = $formBox.find("input#price").val();
+        const location = $formBox.find("input#location").val();
+        const rating = parseFloat($formBox.find("select#rating").val()); // Get the rating value
         const $fileInput = $formBox.find("input[type='file']");
         const image = $fileInput[0].files[0];
 
-        if (!type || !price || !location || !image) {
+        if (!type || !price || !location || !image || !rating) {
             alert("Please fill all required fields and select an image.");
             return;
         }
@@ -63,7 +64,7 @@ $(document).ready(function () {
             </div>
             <div class="detail-row">
                 <span class="detail-label">Rating:</span>
-                <span>${'★'.repeat(Math.floor(item.rating))} (${item.rating})</span>
+                <span>${'★'.repeat(Math.floor(rating))} (${rating})</span>
             </div>
         `);
         
@@ -107,15 +108,15 @@ $(document).ready(function () {
                     <div class="edit-field">
                         <label>Rating:</label>
                         <select>
-                            <option value="1" ${Math.floor(item.rating) === 1 ? "selected" : ""}>1 ★</option>
-                            <option value="1.5" ${Math.floor(item.rating) === 1.5 ? "selected" : ""}>1.5 ★</option>
-                            <option value="2" ${Math.floor(item.rating) === 2 ? "selected" : ""}>2 ★★</option>
-                            <option value="2.5" ${Math.floor(item.rating) === 2.5 ? "selected" : ""}>2.5 ★★</option>
-                            <option value="3" ${Math.floor(item.rating) === 3 ? "selected" : ""}>3 ★★★</option>
-                            <option value="3.5" ${Math.floor(item.rating) === 3.5 ? "selected" : ""}>3.5 ★★★</option>
-                            <option value="4" ${Math.floor(item.rating) === 4 ? "selected" : ""}>4 ★★★★</option>
-                            <option value="4.5" ${Math.floor(item.rating) === 4.5 ? "selected" : ""}>4.5 ★★★★</option>
-                            <option value="5" ${Math.floor(item.rating) === 5 ? "selected" : ""}>5 ★★★★★</option>
+                            <option value="1" ${rating === 1 ? "selected" : ""}>1 ★</option>
+                            <option value="1.5" ${rating === 1.5 ? "selected" : ""}>1.5 ★</option>
+                            <option value="2" ${rating === 2 ? "selected" : ""}>2 ★★</option>
+                            <option value="2.5" ${rating === 2.5 ? "selected" : ""}>2.5 ★★</option>
+                            <option value="3" ${rating === 3 ? "selected" : ""}>3 ★★★</option>
+                            <option value="3.5" ${rating === 3.5 ? "selected" : ""}>3.5 ★★★</option>
+                            <option value="4" ${rating === 4 ? "selected" : ""}>4 ★★★★</option>
+                            <option value="4.5" ${rating === 4.5 ? "selected" : ""}>4.5 ★★★★</option>
+                            <option value="5" ${rating === 5 ? "selected" : ""}>5 ★★★★★</option>
                         </select>
                     </div>
                     <div class="edit-buttons">

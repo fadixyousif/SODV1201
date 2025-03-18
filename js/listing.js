@@ -1,89 +1,86 @@
 const filterTypes = ['price', 'distance', 'rating'];
 
 filterTypes.forEach(filterType => {
-  const rangeInputs = document.querySelectorAll(`.range-input input[data-filter="${filterType}"]`);
-  const progress = document.querySelector(`.${filterType}-slider .progress`);
-  const minValueEl = document.querySelector(`#min-${filterType}`);
-  const maxValueEl = document.querySelector(`#max-${filterType}`);
+  const $rangeInputs = $(`.range-input input[data-filter="${filterType}"]`);
+  const $progress = $(`.${filterType}-slider .progress`);
+  const $minValueEl = $(`#min-${filterType}`);
+  const $maxValueEl = $(`#max-${filterType}`);
   
-  let minVal = parseFloat(rangeInputs[0].value);
-  let maxVal = parseFloat(rangeInputs[1].value);
+  let minVal = parseFloat($rangeInputs.eq(0).val());
+  let maxVal = parseFloat($rangeInputs.eq(1).val());
   
   // Set initial progress bar position
-  progress.style.left = ((minVal - rangeInputs[0].min) / (rangeInputs[0].max - rangeInputs[0].min)) * 100 + "%";
-  progress.style.right = 100 - ((maxVal - rangeInputs[1].min) / (rangeInputs[1].max - rangeInputs[1].min)) * 100 + "%";
+  $progress.css('left', ((minVal - $rangeInputs.eq(0).attr('min')) / ($rangeInputs.eq(0).attr('max') - $rangeInputs.eq(0).attr('min'))) * 100 + "%");
+  $progress.css('right', 100 - ((maxVal - $rangeInputs.eq(1).attr('min')) / ($rangeInputs.eq(1).attr('max') - $rangeInputs.eq(1).attr('min'))) * 100 + "%");
   
-  rangeInputs.forEach(input => {
-    input.addEventListener("input", e => {
-      minVal = parseFloat(rangeInputs[0].value);
-      maxVal = parseFloat(rangeInputs[1].value);
-      
-      if (maxVal - minVal < 0) {
-        if (e.target.classList.contains("range-min")) {
-          rangeInputs[0].value = maxVal;
-          minVal = maxVal;
-        } else {
-          rangeInputs[1].value = minVal;
-          maxVal = minVal;
-        }
+  $rangeInputs.on("input", function(e) {
+    minVal = parseFloat($rangeInputs.eq(0).val());
+    maxVal = parseFloat($rangeInputs.eq(1).val());
+    
+    if (maxVal - minVal < 0) {
+      if ($(e.target).hasClass("range-min")) {
+        $rangeInputs.eq(0).val(maxVal);
+        minVal = maxVal;
+      } else {
+        $rangeInputs.eq(1).val(minVal);
+        maxVal = minVal;
       }
-      
-      // Update display values based on filter type
-      if (filterType === 'price') {
-        minValueEl.textContent = "$" + minVal;
-        maxValueEl.textContent = "$" + maxVal;
-      } else if (filterType === 'distance') {
-        minValueEl.textContent = minVal;
-        maxValueEl.textContent = maxVal;
-      } else if (filterType === 'rating') {
-        minValueEl.textContent = minVal;
-        maxValueEl.textContent = maxVal;
-        updateStars(minVal);
-      }
-      
-      // Update progress bar
-      progress.style.left = ((minVal - rangeInputs[0].min) / (rangeInputs[0].max - rangeInputs[0].min)) * 100 + "%";
-      progress.style.right = 100 - ((maxVal - rangeInputs[1].min) / (rangeInputs[1].max - rangeInputs[1].min)) * 100 + "%";
-    });
+    }
+    
+    // Update display values based on filter type
+    if (filterType === 'price') {
+      $minValueEl.text("$" + minVal);
+      $maxValueEl.text("$" + maxVal);
+    } else if (filterType === 'distance') {
+      $minValueEl.text(minVal);
+      $maxValueEl.text(maxVal);
+    } else if (filterType === 'rating') {
+      $minValueEl.text(minVal);
+      $maxValueEl.text(maxVal);
+      updateStars(minVal);
+    }
+    
+    // Update progress bar
+    $progress.css('left', ((minVal - $rangeInputs.eq(0).attr('min')) / ($rangeInputs.eq(0).attr('max') - $rangeInputs.eq(0).attr('min'))) * 100 + "%");
+    $progress.css('right', 100 - ((maxVal - $rangeInputs.eq(1).attr('min')) / ($rangeInputs.eq(1).attr('max') - $rangeInputs.eq(1).attr('min'))) * 100 + "%");
   });
 });
 
 // Star rating functionality
 function updateStars(rating) {
-  const stars = document.querySelectorAll('.star');
+  const $stars = $('.star');
   const ratingValue = Math.floor(rating);
   
-  stars.forEach((star, index) => {
+  $stars.each(function(index) {
     if (index < ratingValue) {
-      star.classList.add('active');
+      $(this).addClass('active');
     } else {
-      star.classList.remove('active');
+      $(this).removeClass('active');
     }
   });
 }
 
-const stars = document.querySelectorAll('.star');
-stars.forEach((star, index) => {
-  star.addEventListener('click', () => {
-    const ratingInputs = document.querySelectorAll('.range-input input[data-filter="rating"]');
+const $stars = $('.star');
+$stars.each(function(index) {
+  $(this).on('click', function() {
+    const $ratingInputs = $('.range-input input[data-filter="rating"]');
     const newRating = index + 1;
-    ratingInputs[0].value = newRating;
+    $ratingInputs.eq(0).val(newRating);
     
     // Trigger input event to update UI
-    const event = new Event('input');
-    ratingInputs[0].dispatchEvent(event);
+    $ratingInputs.eq(0).trigger('input');
   });
 });
 
 // Apply button
-document.querySelector('.apply-btn').addEventListener('click', () => {
+$('.apply-btn').on('click', function() {
   const filters = {};
   
   filterTypes.forEach(filterType => {
-    const rangeInputs = document.querySelectorAll(`.range-input input[data-filter="${filterType}"]`);
+    const $rangeInputs = $(`.range-input input[data-filter="${filterType}"]`);
     filters[filterType] = {
-      min: parseFloat(rangeInputs[0].value),
-      max: parseFloat(rangeInputs[1].value)
+      min: parseFloat($rangeInputs.eq(0).val()),
+      max: parseFloat($rangeInputs.eq(1).val())
     };
   });
   
@@ -92,65 +89,7 @@ document.querySelector('.apply-btn').addEventListener('click', () => {
 });
 
 // Initialize stars
-updateStars(document.querySelector('.range-input input[data-filter="rating"]').value);
-
-
-const itemsData = [
-  {
-    "image": "./images/meeting-room.jpg",
-    "alt": "Meeting Room",
-    "location": "New York",
-    "rating": 4.5,
-    "distance": "2 miles",
-    "date": "Available Now",
-    "price": "$200/day"
-  },
-  {
-    "image": "./images/desk.jpg",
-    "alt": "Desk",
-    "location": "Los Angeles",
-    "rating": 3.0,
-    "distance": "5 miles",
-    "date": "Available Tomorrow",
-    "price": "$50/day"
-  },
-  {
-    "image": "./images/office.jpg",
-    "alt": "Office",
-    "location": "Chicago",
-    "rating": 5.0,
-    "distance": "10 miles",
-    "date": "Available Next Week",
-    "price": "$500/day"
-  },
-  {
-    "image": "./images/printer.jpg",
-    "alt": "Printer",
-    "location": "Miami",
-    "rating": 4.0,
-    "distance": "3 miles",
-    "date": "Available Now",
-    "price": "$30/day"
-  },
-  {
-    "image": "./images/copier.jpg",
-    "alt": "Copier",
-    "location": "Seattle",
-    "rating": 3.5,
-    "distance": "8 miles",
-    "date": "Available Tomorrow",
-    "price": "$40/day"
-  },
-  {
-    "image": "./images/stationery.jpg",
-    "alt": "Stationery",
-    "location": "San Francisco",
-    "rating": 4.5,
-    "distance": "1 mile",
-    "date": "Available Now",
-    "price": "$10/day"
-  }
-];
+updateStars($('.range-input input[data-filter="rating"]').val());
 
 $(document).ready(function () {
   const $itemGrid = $(".item-grid");
@@ -178,7 +117,7 @@ $(document).ready(function () {
             <span class="detail-label">Date: ${item.date}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">Price: ${item.price}</span>
+            <span class="detail-label">Price: ${item.price} / day</span>
           </div>
         </div>
       </div>

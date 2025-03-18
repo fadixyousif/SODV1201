@@ -61,6 +61,10 @@ $(document).ready(function () {
                 <span class="detail-label">Description:</span>
                 <span>${description || "No description provided."}</span>
             </div>
+            <div class="detail-row">
+                <span class="detail-label">Rating:</span>
+                <span>${'★'.repeat(Math.floor(item.rating))} (${item.rating})</span>
+            </div>
         `);
         
         // Add dropdown toggle icon
@@ -100,6 +104,20 @@ $(document).ready(function () {
                         <label>Location:</label>
                         <input type="text" value="${location}">
                     </div>
+                    <div class="edit-field">
+                        <label>Rating:</label>
+                        <select>
+                            <option value="1" ${Math.floor(item.rating) === 1 ? "selected" : ""}>1 ★</option>
+                            <option value="1.5" ${Math.floor(item.rating) === 1.5 ? "selected" : ""}>1.5 ★</option>
+                            <option value="2" ${Math.floor(item.rating) === 2 ? "selected" : ""}>2 ★★</option>
+                            <option value="2.5" ${Math.floor(item.rating) === 2.5 ? "selected" : ""}>2.5 ★★</option>
+                            <option value="3" ${Math.floor(item.rating) === 3 ? "selected" : ""}>3 ★★★</option>
+                            <option value="3.5" ${Math.floor(item.rating) === 3.5 ? "selected" : ""}>3.5 ★★★</option>
+                            <option value="4" ${Math.floor(item.rating) === 4 ? "selected" : ""}>4 ★★★★</option>
+                            <option value="4.5" ${Math.floor(item.rating) === 4.5 ? "selected" : ""}>4.5 ★★★★</option>
+                            <option value="5" ${Math.floor(item.rating) === 5 ? "selected" : ""}>5 ★★★★★</option>
+                        </select>
+                    </div>
                     <div class="edit-buttons">
                         <button type="button" class="btn save">Save</button>
                         <button type="button" class="btn cancel">Cancel</button>
@@ -136,15 +154,16 @@ $(document).ready(function () {
         });
 
         // Handle save button click
-        $dropdownContent.find(".save").on("click", function(e) {
+        $dropdownContent.find(".save").on("click", function (e) {
             e.stopPropagation();
             const $form = $(this).closest("form");
-            const newType = $form.find("select").val();
+            const newType = $form.find("select").eq(0).val(); // First select for category
             const newDescription = $form.find("textarea").val();
             const newPrice = $form.find("input[type='number']").val();
             const newLocation = $form.find("input[type='text']").val();
-
-            // Check if any field is empty or invalid
+            const newRating = parseFloat($form.find("select").eq(1).val()); // Second select for rating
+        
+            // Validate fields
             if (!newType) {
                 alert("Please select a type.");
                 return;
@@ -161,14 +180,17 @@ $(document).ready(function () {
                 alert("Please enter a location.");
                 return;
             }
-
+        
             // Update detail rows
             const $detailRows = $details.find(".detail-row");
             $detailRows.eq(0).find("span:last-child").text(newType);
             $detailRows.eq(1).find("span:last-child").text(`$${newPrice} per day`);
             $detailRows.eq(2).find("span:last-child").text(newLocation);
             $detailRows.eq(3).find("span:last-child").text(newDescription || "No description provided.");
-            
+            $detailRows.eq(4).find("span:last-child").html(`
+                ${'★'.repeat(Math.floor(newRating))} (${newRating})
+            `);
+        
             // Hide dropdown
             $dropdownContent.slideUp(300);
             $dropdownToggle.removeClass("active");
@@ -185,6 +207,17 @@ $(document).ready(function () {
         $dropdownContent.find(".delete").on("click", function(e) {
             e.stopPropagation();
             $listingItem.remove();
+        });
+
+        $dropdownContent.find(".rating-stars .star").on("click", function () {
+            const $stars = $(this).parent().find(".star");
+            const rating = $(this).data("value");
+
+            $stars.each(function () {
+                $(this).toggleClass("active", $(this).data("value") <= rating);
+            });
+
+            $(this).closest("form").data("rating", rating);
         });
     });
     
@@ -243,6 +276,10 @@ $(document).ready(function () {
                 <span class="detail-label">Description:</span>
                 <span>${item.description || "No description provided."}</span>
             </div>
+            <div class="detail-row">
+                <span class="detail-label">Rating:</span>
+                <span>${'★'.repeat(Math.floor(item.rating))} (${item.rating})</span>
+            </div>
         `);
 
         // Add dropdown toggle icon
@@ -282,6 +319,20 @@ $(document).ready(function () {
                         <label>Location:</label>
                         <input type="text" value="${item.location}">
                     </div>
+                    <div class="edit-field">
+                        <label>Rating:</label>
+                        <select>
+                            <option value="1" ${item.rating === 1 ? "selected" : ""}>1 ★</option>
+                            <option value="1.5" ${item.rating === 1.5 ? "selected" : ""}>1.5 ★</option>
+                            <option value="2" ${item.rating === 2 ? "selected" : ""}>2 ★★</option>
+                            <option value="2.5" ${item.rating === 2.5 ? "selected" : ""}>2.5 ★★</option>
+                            <option value="3" ${item.rating === 3 ? "selected" : ""}>3 ★★★</option>
+                            <option value="3.5" ${item.rating === 3.5 ? "selected" : ""}>3.5 ★★★</option>
+                            <option value="4" ${item.rating === 4 ? "selected" : ""}>4 ★★★★</option>
+                            <option value="4.5" ${item.rating === 4.5 ? "selected" : ""}>4.5 ★★★★</option>
+                            <option value="5" ${item.rating === 5 ? "selected" : ""}>5 ★★★★★</option>
+                        </select>
+                    </div>
                     <div class="edit-buttons">
                         <button type="button" class="btn save">Save</button>
                         <button type="button" class="btn cancel">Cancel</button>
@@ -314,12 +365,13 @@ $(document).ready(function () {
         $dropdownContent.find(".save").on("click", function(e) {
             e.stopPropagation();
             const $form = $(this).closest("form");
-            const newType = $form.find("select").val();
+            const newType = $form.find("select").eq(0).val(); // First select for category
             const newDescription = $form.find("textarea").val();
             const newPrice = $form.find("input[type='number']").val();
             const newLocation = $form.find("input[type='text']").val();
-
-            // Check if any field is empty or invalid
+            const newRating = parseFloat($form.find("select").eq(1).val()); // Second select for rating
+        
+            // Validate fields
             if (!newType) {
                 alert("Please select a type.");
                 return;
@@ -336,14 +388,17 @@ $(document).ready(function () {
                 alert("Please enter a location.");
                 return;
             }
-
+        
             // Update detail rows
             const $detailRows = $details.find(".detail-row");
             $detailRows.eq(0).find("span:last-child").text(newType);
             $detailRows.eq(1).find("span:last-child").text(`$${newPrice} per day`);
             $detailRows.eq(2).find("span:last-child").text(newLocation);
             $detailRows.eq(3).find("span:last-child").text(newDescription || "No description provided.");
-            
+            $detailRows.eq(4).find("span:last-child").html(`
+                ${'★'.repeat(Math.floor(newRating))} (${newRating})
+            `);
+        
             // Hide dropdown
             $dropdownContent.slideUp(300);
             $dropdownToggle.removeClass("active");
@@ -360,6 +415,17 @@ $(document).ready(function () {
         $dropdownContent.find(".delete").on("click", function(e) {
             e.stopPropagation();
             $listingItem.remove();
+        });
+
+        $dropdownContent.find(".rating-stars .star").on("click", function () {
+            const $stars = $(this).parent().find(".star");
+            const rating = $(this).data("value");
+
+            $stars.each(function () {
+                $(this).toggleClass("active", $(this).data("value") <= rating);
+            });
+
+            $(this).closest("form").data("rating", rating);
         });
     }
 

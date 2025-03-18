@@ -452,6 +452,22 @@ input[type="range"]::-moz-range-thumb {
   color: #ff9800;
 }
 
+.rating-stars {
+    display: flex;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.rating-stars .star {
+    font-size: 20px;
+    color: #ddd;
+    transition: color 0.2s;
+}
+
+.rating-stars .star.active {
+    color: #ff9800;
+}
+
 .apply-btn {
   background-color: #04aa6d;
   color: white;

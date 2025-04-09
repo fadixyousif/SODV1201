@@ -130,7 +130,7 @@ app.post('/api/users/login', async (req, res) => {
 
 // debug check for jwt token
 app.get("/api/users/login/verify", authentication.verifyToken, (req, res) => { 
-  res.json({ message: 'valid' }); 
+  res.json({ valid: true }); 
 });
 
 
@@ -144,9 +144,128 @@ app.put('/api/users/profile', authentication.verifyToken, (req, res) => {
   res.send({ message: 'Work In Progress' })
 });
 
-// POST request to search for properties
-app.post('/api/search', authentication.verifyToken, (req, res) => {
-  res.send({ message: 'Work In Progress' })
+/* 
+
+{
+  "address": "",
+  "neighbourhood": "",
+  "min_sqft": 0,
+  "max_sqft": 100000,        // A very large max to avoid filtering out large spaces
+  "garage": null,            // null means "no preference"
+  "transport": null,
+  "capacity": 0,
+  "smoking": null,
+  "availability_date": null, // null = any date
+  "term": "",
+  "min_price": 0,
+  "max_price": 100000,       // A very high max to avoid filtering expensive spaces
+  "sort_by": "rating",
+  "sort_order": "desc",
+  "include_delisted": false
+}
+
+*/
+
+// GET request to search for properties
+app.get('/api/search', authentication.verifyToken, async (req, res) => {
+  const {
+    address,
+    neighbourhood,
+    min_sqft,
+    max_sqft,
+    garage,
+    transport,
+    workspace = {}
+  } = req.body;
+  
+  const {
+    capacity,
+    term,
+    min_price,
+    max_price,
+    sort_by,
+    sort_order
+  } = workspace;
+  
+
+	// get the user from the provided email by jwt token
+	const user = await queries.getUserByEmail(req.tokenEmail.email);
+
+	// check if user exists
+	if (user) {
+		// check if the user is not an owner then return a 403 error
+		if (user.role !== 'owner' && user.role !== 'coworker') {
+			return res.status(403).send({
+				message: 'Unauthorized'
+			});
+		}
+		// else if there is an error getting the user then return a 400 error
+	} else {
+		return res.status(400).send({
+			code: 1,
+			message: 'Internal server error'
+		});
+	}
+
+	// make a filter object to filter the properties based on the provided values if one of the values are null then it will not be included in the filter and sql query
+
+	try {
+		const propertyFilters = {
+			address,
+			neighbourhood,
+			min_sqft,
+			max_sqft,
+			garage,
+			transport
+		};
+
+		const {
+			query: propQuery,
+			values: propValues
+		} = queries.buildPropertySearchQuery(propertyFilters);
+		const [properties] = await connection.execute(propQuery, propValues);
+
+    properties.forEach(property => {
+      delete property.delisted;
+    });
+
+		// Step 2: For each property, get matching workspaces
+		const results = [];
+		for (const property of properties) {
+			const workspaceFilters = {
+				capacity,
+				term,
+				min_price,
+				max_price,
+				sort_by,
+				sort_order
+			};
+
+			const {
+				query: wsQuery,
+				values: wsValues
+			} = queries.buildWorkspaceSearchQuery(property.propertyID, workspaceFilters);
+			const [workspaces] = await connection.execute(wsQuery, wsValues);
+
+      workspaces.forEach(space => {
+        delete space.delisted;
+      });
+
+			results.push({
+				...property,
+				workspaces
+			});
+		}
+
+		res.send({
+			message: 'Search successful',
+			results
+		});
+	} catch (err) {
+		console.error(err);
+    res.status(500).send({ code: 2, message: 'Internal server error' });
+
+	}
 });
 
 // Property Management Endpoints
@@ -155,13 +274,10 @@ app.post('/api/search', authentication.verifyToken, (req, res) => {
 app.get('/api/properties/property', authentication.verifyToken, async (req, res) => {
   const { propertyID } = req.body;
 
-  console.log(propertyID);
   // check if the propertyID is provided
   if (!propertyID) {
     return res.status(400).send({ message: 'Property ID is required' });
   }
-
-
 
   // try handle the property fetching process and error handling
   try {
@@ -263,7 +379,7 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
   if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
     return res.status(403).send({ message: 'User does not own the property' });
   }
-  
+
   // try handle the property update process and error handling
   try { 
     // make a sql variable to update the property in the database using the connection pool and provided values
@@ -399,7 +515,7 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
 
 
   // check if all the required fields are provided
-  if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || delisted === undefined) {
+  if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || !image || delisted === undefined) {
     return res.status(400).send({ message: 'All fields are required' });
   }
 
@@ -416,9 +532,9 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
   // try handle the workspace creation process and error handling
   try {
     // make a sql variable to insert the new workspace into the database using the connection pool and provided values
-    const sql = 'INSERT INTO `workspaces` (ownerID, propertyID, name, type, term, sqft, capacity, price, rating, delisted) VALUES (?,?,?,?,?,?,?,?,?,?)';
+    const sql = 'INSERT INTO `workspaces` (ownerID, propertyID, name, type, term, sqft, capacity, price, rating, image, delisted) VALUES (?,?,?,?,?,?,?,?,?,?,?)';
     // execute the sql query with the provided values and get the result
-    const [rows, fields] = await connection.execute(sql, [user.id, propertyID, name, type, term, sqft, capacity, price, rating, delisted ? 1 : 0]);
+    const [rows, fields] = await connection.execute(sql, [user.id, propertyID, name, type, term, sqft, capacity, price, rating, image, delisted ? 1 : 0]);
 
     if (rows.affectedRows > 0) {
       // send a success message if the workspace was inserted successfully
@@ -436,7 +552,7 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
 
 // PUT request to edit a workspace
 app.put('/api/management/workspaces/workspace', authentication.verifyToken, async (req, res) => {
-  const { name, type, term, sqft, capacity, price, propertyID, rating, delisted, workspaceID } = req.body;
+  const { name, type, term, sqft, capacity, price, propertyID, rating, delisted, workspaceID, image } = req.body;
   
     // get the user from the provided email by jwt token
     const user = await queries.getUserByEmail(req.tokenEmail.email);
@@ -475,9 +591,9 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     // try handle the workspace update process and error handling
     try {
       // make a sql variable to update the workspace in the database using the connection pool and provided values
-      const sql = 'UPDATE `workspaces` SET name = ?, type = ?, term = ?, sqft = ?, capacity = ?, price = ?, rating = ?, delisted = ?, propertyID = ? WHERE workspaceID = ?';
+      const sql = 'UPDATE `workspaces` SET name = ?, type = ?, term = ?, sqft = ?, capacity = ?, price = ?, rating = ?, delisted = ?, image = ?, propertyID = ? WHERE workspaceID = ?';
       // execute the sql query with the provided values and get the result
-      const [rows, fields] = await connection.execute(sql, [name, type, term, sqft, capacity, price, rating, delisted ? 1 : 0, propertyID, workspaceID]);
+      const [rows, fields] = await connection.execute(sql, [name, type, term, sqft, capacity, price, rating, delisted ? 1 : 0, image, propertyID, workspaceID]);
   
       // check if the workspace was updated successfully and send a success message
       if (rows.affectedRows > 0) {

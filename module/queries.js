@@ -129,6 +129,76 @@ async function deletePropertyById(res, propertyID, code) {
   }
 }
 
+
+function buildPropertySearchQuery(filters = {}) {
+  const whereClauses = ['p.delisted = 0'];
+  const values = [];
+
+  if (filters.address != null && filters.address.trim() !== '') {
+    whereClauses.push('p.address LIKE ?');
+    values.push(`%${filters.address.trim()}%`);
+  }
+
+  if (filters.neighbourhood != null && filters.neighbourhood.trim() !== '') {
+    whereClauses.push('p.neighbourhood LIKE ?');
+    values.push(`%${filters.neighbourhood.trim()}%`);
+  }
+
+  if (filters.min_sqft != null && filters.max_sqft != null) {
+    whereClauses.push('p.sqft BETWEEN ? AND ?');
+    values.push(filters.min_sqft, filters.max_sqft);
+  }
+
+  if (filters.garage != null) {
+    whereClauses.push('p.garage = ?');
+    values.push(filters.garage);
+  }
+
+  if (filters.transport != null) {
+    whereClauses.push('p.transport = ?');
+    values.push(filters.transport);
+  }
+
+  const whereSQL = `WHERE ${whereClauses.join(' AND ')}`;
+  const query = `SELECT * FROM properties p ${whereSQL};`;
+
+  return { query, values };
+}
+
+function buildWorkspaceSearchQuery(propertyID, filters = {}) {
+  const whereClauses = ['w.delisted = 0', 'w.propertyID = ?'];
+  const values = [propertyID];
+
+  if (filters.capacity != null) {
+    whereClauses.push('w.capacity >= ?');
+    values.push(filters.capacity);
+  }
+
+  if (filters.term != null && filters.term.trim() !== '') {
+    whereClauses.push('w.term = ?');
+    values.push(filters.term.trim());
+  }
+
+  if (filters.min_price != null && filters.max_price != null) {
+    whereClauses.push('w.price BETWEEN ? AND ?');
+    values.push(filters.min_price, filters.max_price);
+  }
+
+  let orderBySQL = 'ORDER BY w.rating DESC';
+  if (filters.sort_by != null) {
+    const allowedSorts = ['price', 'rating'];
+    const sortBy = allowedSorts.includes(filters.sort_by) ? filters.sort_by : 'rating';
+    const sortOrder = filters.sort_order === 'asc' ? 'ASC' : 'DESC';
+    orderBySQL = `ORDER BY w.${sortBy} ${sortOrder}`;
+  }
+
+  const whereSQL = `WHERE ${whereClauses.join(' AND ')}`;
+  const query = `SELECT * FROM workspaces w ${whereSQL} ${orderBySQL};`;
+
+  return { query, values };
+}
+
+
 module.exports = {
   connection,
   registerCheckUserExists,
@@ -138,4 +208,6 @@ module.exports = {
   checkWorkspaceExists,
   checkWorkspaceOwnedByUser,
   deletePropertyById,
+  buildPropertySearchQuery,
+  buildWorkspaceSearchQuery,
 };

@@ -130,38 +130,47 @@ async function deletePropertyById(res, propertyID, code) {
 }
 
 
+// function to build the property search query based on the provided filters
 function buildPropertySearchQuery(filters = {}) {
   const whereClauses = ['p.delisted = 0'];
   const values = [];
 
+  // check if is not null and not empty and add to the where clauses
   if (filters.address != null && filters.address.trim() !== '') {
     whereClauses.push('p.address LIKE ?');
     values.push(`%${filters.address.trim()}%`);
   }
 
+    // check if is not null and not empty and add to the where clauses
   if (filters.neighbourhood != null && filters.neighbourhood.trim() !== '') {
     whereClauses.push('p.neighbourhood LIKE ?');
     values.push(`%${filters.neighbourhood.trim()}%`);
   }
 
+  // check if is not null and not empty and add to the where clauses
   if (filters.min_sqft != null && filters.max_sqft != null) {
     whereClauses.push('p.sqft BETWEEN ? AND ?');
     values.push(filters.min_sqft, filters.max_sqft);
   }
 
+  // check if is not null and not empty and add to the where clauses
   if (filters.garage != null) {
     whereClauses.push('p.garage = ?');
     values.push(filters.garage);
   }
 
+  // check if is not null and not empty and add to the where clauses
   if (filters.transport != null) {
     whereClauses.push('p.transport = ?');
     values.push(filters.transport);
   }
 
-  const whereSQL = `WHERE ${whereClauses.join(' AND ')}`;
+  // where varaibble checking if the where clauses are not empty and add to the where clauses
+  const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+  // add query variable to the sql query using the connection pool and provided values
   const query = `SELECT * FROM properties p ${whereSQL};`;
 
+  // return the query and values to be used in the sql query
   return { query, values };
 }
 
@@ -169,32 +178,30 @@ function buildWorkspaceSearchQuery(propertyID, filters = {}) {
   const whereClauses = ['w.delisted = 0', 'w.propertyID = ?'];
   const values = [propertyID];
 
+  // where varaibble checking if the where clauses are not empty and add to the where clauses
   if (filters.capacity != null) {
     whereClauses.push('w.capacity >= ?');
     values.push(filters.capacity);
   }
 
+  // where varaibble checking if the where clauses are not empty and add to the where clauses
   if (filters.term != null && filters.term.trim() !== '') {
     whereClauses.push('w.term = ?');
     values.push(filters.term.trim());
   }
 
+  // where varaibble checking if the where clauses are not empty and add to the where clauses
   if (filters.min_price != null && filters.max_price != null) {
     whereClauses.push('w.price BETWEEN ? AND ?');
     values.push(filters.min_price, filters.max_price);
   }
 
-  let orderBySQL = 'ORDER BY w.rating DESC';
-  if (filters.sort_by != null) {
-    const allowedSorts = ['price', 'rating'];
-    const sortBy = allowedSorts.includes(filters.sort_by) ? filters.sort_by : 'rating';
-    const sortOrder = filters.sort_order === 'asc' ? 'ASC' : 'DESC';
-    orderBySQL = `ORDER BY w.${sortBy} ${sortOrder}`;
-  }
+  // where varaibble checking if the where clauses are not empty and add to the where clauses
+  const whereSQL = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
+  // add query variable to the sql query using the connection pool and provided values
+  const query = `SELECT * FROM workspaces w ${whereSQL} ;`;
 
-  const whereSQL = `WHERE ${whereClauses.join(' AND ')}`;
-  const query = `SELECT * FROM workspaces w ${whereSQL} ${orderBySQL};`;
-
+  // return the query and values to be used in the sql query
   return { query, values };
 }
 

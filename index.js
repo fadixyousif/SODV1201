@@ -144,30 +144,9 @@ app.put('/api/users/profile', authentication.verifyToken, (req, res) => {
   res.send({ message: 'Work In Progress' })
 });
 
-/* 
-
-{
-  "address": "",
-  "neighbourhood": "",
-  "min_sqft": 0,
-  "max_sqft": 100000,        // A very large max to avoid filtering out large spaces
-  "garage": null,            // null means "no preference"
-  "transport": null,
-  "capacity": 0,
-  "smoking": null,
-  "availability_date": null, // null = any date
-  "term": "",
-  "min_price": 0,
-  "max_price": 100000,       // A very high max to avoid filtering expensive spaces
-  "sort_by": "rating",
-  "sort_order": "desc",
-  "include_delisted": false
-}
-
-*/
-
 // GET request to search for properties
 app.get('/api/search', authentication.verifyToken, async (req, res) => {
+  // get the search filters from the request body
   const {
     address,
     neighbourhood,
@@ -207,9 +186,9 @@ app.get('/api/search', authentication.verifyToken, async (req, res) => {
 		});
 	}
 
-	// make a filter object to filter the properties based on the provided values if one of the values are null then it will not be included in the filter and sql query
-
+  // try method to handle the search process and error handling
 	try {
+    // make a filter object to filter the properties based on the provided values
 		const propertyFilters = {
 			address,
 			neighbourhood,
@@ -219,44 +198,51 @@ app.get('/api/search', authentication.verifyToken, async (req, res) => {
 			transport
 		};
 
+    // get the SQL query and values to search for properties from the database using the connection pool and provided values
 		const {
 			query: propQuery,
 			values: propValues
 		} = queries.buildPropertySearchQuery(propertyFilters);
+    // call the connection pool to execute the sql query with the provided values and get the result
 		const [properties] = await connection.execute(propQuery, propValues);
 
+    // remove the delisted property from the properties array should not be sent to the client
     properties.forEach(property => {
       delete property.delisted;
     });
 
-		// Step 2: For each property, get matching workspaces
+    // make an array to store the results of property and  the workspaces
 		const results = [];
 		for (const property of properties) {
+      // make a filter object to filter the workspaces based on the provided values
 			const workspaceFilters = {
 				capacity,
 				term,
 				min_price,
-				max_price,
-				sort_by,
-				sort_order
+				max_price
 			};
-
+      
+      // get the SQL query and values to search for workspaces from the database using the connection pool and provided values
 			const {
 				query: wsQuery,
 				values: wsValues
 			} = queries.buildWorkspaceSearchQuery(property.propertyID, workspaceFilters);
+      // call the connection pool to execute the sql query with the provided values and get the result
 			const [workspaces] = await connection.execute(wsQuery, wsValues);
 
+      // remove the delisted workspace from the workspaces array should not be sent to the client
       workspaces.forEach(space => {
         delete space.delisted;
       });
 
+      // push the property and the workspaces to the results array
 			results.push({
 				...property,
 				workspaces
 			});
 		}
 
+    // send the results back to the client
 		res.send({
 			message: 'Search successful',
 			results

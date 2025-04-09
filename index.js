@@ -161,9 +161,7 @@ app.get('/api/search', authentication.verifyToken, async (req, res) => {
     capacity,
     term,
     min_price,
-    max_price,
-    sort_by,
-    sort_order
+    max_price
   } = workspace;
   
 

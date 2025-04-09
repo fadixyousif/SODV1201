@@ -59,6 +59,22 @@ async function checkPropertyExists(propertyID) {
   }
 }
 
+async function checkPropertyOwnedByUser(userID, propertyID) {
+  // try handle the property existence checking process and error handling
+  try {
+    // sql variable to check if the property exists in the database using the connection pool and provided values
+    const sql = 'SELECT * FROM `properties` WHERE propertyID = ? AND ownerID = ?';
+    // execute the sql query with the provided values and get the result
+    const [rows, fields] = await connection.execute(sql, [propertyID, userID]);
+
+    return rows.length > 0; // returns true if property exists
+  // catch any errors that occur during the property existence checking process and send a 500 status code and an error message
+  } catch (error) {
+    console.error('Error checking property existence:', error);
+    return false; // assume property does not exist in case of error
+  }
+}
+
 // chedck if the property exists by id
 async function checkWorkspaceExists(propertyID) {
   // try handle the property existence checking process and error handling
@@ -67,6 +83,22 @@ async function checkWorkspaceExists(propertyID) {
     const sql = 'SELECT * FROM `workspaces` WHERE workspaceID = ?';
     // execute the sql query with the provided values and get the result
     const [rows, fields] = await connection.execute(sql, [propertyID]);
+
+    return rows.length > 0; // returns true if property exists
+  // catch any errors that occur during the property existence checking process and send a 500 status code and an error message
+  } catch (error) {
+    console.error('Error checking property existence:', error);
+    return false; // assume property does not exist in case of error
+  }
+}
+
+async function checkWorkspaceOwnedByUser(userID, workspaceID) { 
+  // try handle the property existence checking process and error handling
+  try {
+    // sql variable to check if the property exists in the database using the connection pool and provided values
+    const sql = 'SELECT * FROM `workspaces` WHERE workspaceID = ? AND ownerID = ?';
+    // execute the sql query with the provided values and get the result
+    const [rows, fields] = await connection.execute(sql, [workspaceID, userID]);
 
     return rows.length > 0; // returns true if property exists
   // catch any errors that occur during the property existence checking process and send a 500 status code and an error message
@@ -102,6 +134,8 @@ module.exports = {
   registerCheckUserExists,
   getUserByEmail,
   checkPropertyExists,
+  checkPropertyOwnedByUser,
   checkWorkspaceExists,
+  checkWorkspaceOwnedByUser,
   deletePropertyById,
 };

@@ -150,35 +150,6 @@ app.post('/api/search', authentication.verifyToken, (req, res) => {
 });
 
 // Property Management Endpoints
-// GET request to get all properties
-app.get('/api/properties', authentication.verifyToken, async (req, res) => {
-  // get the user from the provided email by jwt token
-
-  // try handle the property fetching process and error handling
-  try {
-    // make a sql variable to get all properties from the database using the connection pool and provided values
-    const sql = 'SELECT * FROM `properties` WHERE delisted = 0';
-    // execute the sql query with the provided values and get the result
-    const [rows, fields] = await connection.execute(sql, []);
-
-    if (rows.length > 0) {
-      // send the properties back to the client
-
-      // remove the delisted property from the response
-      rows.forEach(row => {
-        delete row.delisted;
-      });
-
-      res.status(200).send(rows);
-    } else {
-      // send a 404 status code and an error message if no properties were found
-      res.status(404).send({ message: 'No properties found' });
-    }
-  } catch (error) {
-    console.error('Error during properties fetching:', error);
-    res.status(500).send({ message: 'Internal server error' });
-  }
-});
 
 // GET request to get a single property by ID
 app.get('/api/properties/property', authentication.verifyToken, async (req, res) => {
@@ -283,8 +254,17 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
     return res.status(400).send({ message: 'All fields are required' });
   }
 
-  // try handle the property update process and error handling
+  // check if the property exists
+  if (!await queries.checkPropertyExists(propertyID)) {
+    return res.status(400).send({ message: 'Property does not exist' });
+  }
 
+  // check if the user does not owns the workspace
+  if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
+    return res.status(403).send({ message: 'User does not own the property' });
+  }
+  
+  // try handle the property update process and error handling
   try { 
     // make a sql variable to update the property in the database using the connection pool and provided values
     const sql = 'UPDATE `properties` SET name = ?, address = ?, address2 = ?, province = ?, city = ?, country = ?, postal = ?, neighbourhood = ?, garage = ?, sqft = ?, transport = ? WHERE propertyID = ?';
@@ -323,6 +303,20 @@ app.delete('/api/management/properties/property', authentication.verifyToken, as
     return res.status(400).send({ code: 1, message: 'Internal server error' });
   }
 
+  if (!propertyID) {
+    return res.status(400).send({ message: 'Property ID is required' });
+  }
+  
+  // check if the property exists
+  if (!await queries.checkPropertyExists(propertyID)) {
+    return res.status(400).send({ message: 'Property does not exist' });
+  }
+
+  // check if the user does not owns the workspace
+  if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
+    return res.status(403).send({ message: 'User does not own the property' });
+  }
+
   // before deleting the check if workspaces are associated with the property delete the workspaces first then delete the property
 
   try {
@@ -350,38 +344,6 @@ app.delete('/api/management/properties/property', authentication.verifyToken, as
 });
 
 // workspace Management Endpoints
-
-// GET request to get all workspaces
-app.get('/api/workspaces', authentication.verifyToken, async (req, res) => {  
-  // get the user from the provided email by jwt token
-
-  // try handle the workspace fetching process and error handling
-  try {
-    // make a sql variable to get all workspaces from the database using the connection pool and provided values
-    const sql = 'SELECT * FROM `workspaces` WHERE delisted = 0';
-    // execute the sql query with the provided values and get the result
-    const [rows, fields] = await connection.execute(sql, []);
-
-    if (rows.length > 0) {
-      // send the workspaces back to the client
-
-      // remove the delisted property from the response
-      rows.forEach(row => {
-        delete row.delisted;
-      });
-
-      res.status(200).send(rows);
-    } else {
-      // send a 404 status code and an error message if no workspaces were found
-      res.status(404).send({ message: 'No workspaces found' });
-    }
-  } catch (error) {
-    console.error('Error during workspaces fetching:', error);
-    res.status(500).send({ message: 'Internal server error' });
-  }
-}
-);
-
 // GET request to get a single workspace by ID
 app.get('/api/workspaces/workspace', authentication.verifyToken, async (req, res) => {
   const { workspaceID } = req.body;
@@ -446,6 +408,11 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
     return res.status(400).send({ message: 'Property does not exist' });
   }
 
+  // check if the user does not owns the workspace
+  if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
+    return res.status(403).send({ message: 'User does not own the property' });
+  }
+
   // try handle the workspace creation process and error handling
   try {
     // make a sql variable to insert the new workspace into the database using the connection pool and provided values
@@ -494,7 +461,17 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     if (!await queries.checkPropertyExists(propertyID)) {
       return res.status(400).send({ message: 'Property does not exist' });
     }
-  
+
+    // check if the user does not owns the workspace
+    if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
+      return res.status(403).send({ message: 'User does not own the property' });
+    }
+
+    // check if the workspace is owned by the user
+    if (!await queries.checkWorkspaceOwnedByUser(user.id, workspaceID)) {
+      return res.status(403).send({ message: 'User does not own the workspace' });
+    }
+
     // try handle the workspace update process and error handling
     try {
       // make a sql variable to update the workspace in the database using the connection pool and provided values
@@ -534,9 +511,25 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
     return res.status(400).send({ code: 1, message: 'Internal server error' });
   }
 
+  
   // check if the workspaceID is provided
   if (!workspaceID) {
     return res.status(400).send({ message: 'Workspace ID is required' });
+  }
+
+  // check if the property exists
+  if (!await queries.checkPropertyExists(propertyID)) {
+    return res.status(400).send({ message: 'Property does not exist' });
+  }
+
+  // check if the user does not owns the workspace
+  if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
+    return res.status(403).send({ message: 'User does not own the property' });
+  }
+
+  // check if the workspace is owned by the user
+  if (!await queries.checkWorkspaceOwnedByUser(user.id, workspaceID)) {
+    return res.status(403).send({ message: 'User does not own the workspace' });
   }
 
   // check if the workspace exists

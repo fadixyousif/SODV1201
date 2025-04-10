@@ -42,6 +42,22 @@ async function getUserByEmail(email) {
   }
 }
 
+// check if the property exists by name, address, city and postal code
+async function checkPropertyExistsByDetails(name, address, city, postal) {
+  // try handle the property existence checking process and error handling
+  try {
+    // sql variable to check if the property exists in the database using the connection pool and provided values
+    const sql = 'SELECT * FROM `properties` WHERE name = ? AND address = ? AND city = ? AND postal = ?';
+    // execute the sql query with the provided values and get the result
+    const [rows] = await connection.execute(sql, [name, address, city, postal]);
+    return rows.length > 0; // Return true if a property exists, false otherwise
+  } catch (error) {
+    console.error('Error checking property existence:', error);
+    return false; // Assume property does not exist in case of error
+  }
+
+}
+
 // chedck if the property exists by id
 async function checkPropertyExists(propertyID) {
   // try handle the property existence checking process and error handling
@@ -108,6 +124,18 @@ async function checkWorkspaceOwnedByUser(userID, workspaceID) {
   }
 }
 
+async function checkWorkspaceExistsByDetails(name, propertyID) {
+  try {
+    const sql = 'SELECT * FROM `workspaces` WHERE name = ? AND propertyID = ?';
+    const [rows] = await connection.execute(sql, [name, propertyID]);
+    return rows.length > 0; // Return true if a workspace exists, false otherwise
+  } catch (error) {
+    console.error('Error checking workspace existence:', error);
+    return false; // Assume workspace does not exist in case of error
+  }
+}
+
+
 // delete property by id
 async function deletePropertyById(res, propertyID, code) {
   try {
@@ -118,14 +146,14 @@ async function deletePropertyById(res, propertyID, code) {
 
     // check if the property was deleted successfully and send a success message
     if (rows.affectedRows > 0) {
-      res.status(200).send({ message: 'Property deleted successfully' });
+      res.status(200).send({ message: 'Property deleted successfully', success: true });
     } else {
       // send a 400 status code and an error message if the property was not deleted successfully
-      res.status(400).send({ message: 'Property deletion failed' });
+      res.status(400).send({ message: 'Property deletion failed', success: false });
     }
   } catch (error) {
     console.error('Error during deleting property:', error);
-    return res.status(500).send({ code: code, message: 'Internal server error' });
+    return res.status(500).send({ code: code, message: 'Internal server error', success: false });
   }
 }
 
@@ -142,25 +170,55 @@ function buildPropertySearchQuery(filters = {}) {
   }
 
     // check if is not null and not empty and add to the where clauses
+  if (filters.address2 != null && filters.address2.trim() !== '') {
+    whereClauses.push('p.address2 LIKE ?');
+    values.push(`%${filters.address2.trim()}%`);
+  }
+   
+  // check if is not null and not empty and add to the where clauses
+  if (filters.province != null && filters.province.trim() !== '') {
+    whereClauses.push('p.province LIKE ?');
+    values.push(`%${filters.province.trim()}%`);
+  }
+
+  // check if is not null and not empty and add to the where clauses
+  if (filters.city != null && filters.city.trim() !== '') {
+    whereClauses.push('p.city LIKE ?');
+    values.push(`%${filters.city.trim()}%`);
+  }
+
+  // check if is not null and not empty and add to the where clauses
+  if (filters.country != null && filters.country.trim() !== '') {
+    whereClauses.push('p.country LIKE ?');
+    values.push(`%${filters.country.trim()}%`);
+  }
+
+  // check if is not null and not empty and add to the where clauses
+  if (filters.postal != null && filters.postal.trim() !== '') {
+    whereClauses.push('p.postal LIKE ?');
+    values.push(`%${filters.postal.trim()}%`);
+  }
+
+  // check if is not null and not empty and add to the where clauses
   if (filters.neighbourhood != null && filters.neighbourhood.trim() !== '') {
     whereClauses.push('p.neighbourhood LIKE ?');
     values.push(`%${filters.neighbourhood.trim()}%`);
   }
 
   // check if is not null and not empty and add to the where clauses
-  if (filters.min_sqft != null && filters.max_sqft != null) {
+  if (filters.min_sqft != null && filters.max_sqft != null && !isNaN(filters.min_sqft) && !isNaN(filters.max_sqft)) {
     whereClauses.push('p.sqft BETWEEN ? AND ?');
     values.push(filters.min_sqft, filters.max_sqft);
   }
 
   // check if is not null and not empty and add to the where clauses
-  if (filters.garage != null) {
+  if (filters.garage != null && (typeof filters.garage) === 'boolean') {
     whereClauses.push('p.garage = ?');
     values.push(filters.garage);
   }
 
   // check if is not null and not empty and add to the where clauses
-  if (filters.transport != null) {
+  if (filters.transport != null && (typeof filters.transport) === 'boolean') {
     whereClauses.push('p.transport = ?');
     values.push(filters.transport);
   }
@@ -174,12 +232,14 @@ function buildPropertySearchQuery(filters = {}) {
   return { query, values };
 }
 
+
+// function to build the workspace search query based on the provided filters
 function buildWorkspaceSearchQuery(propertyID, filters = {}) {
   const whereClauses = ['w.delisted = 0', 'w.propertyID = ?'];
   const values = [propertyID];
 
-  // where varaibble checking if the where clauses are not empty and add to the where clauses
-  if (filters.capacity != null) {
+  // where varaibble checking if the where clauses are not empty and is a number then add to the where clauses
+  if (filters.capacity != null && !isNaN(filters.capacity)) {
     whereClauses.push('w.capacity >= ?');
     values.push(filters.capacity);
   }
@@ -190,10 +250,28 @@ function buildWorkspaceSearchQuery(propertyID, filters = {}) {
     values.push(filters.term.trim());
   }
 
-  // where varaibble checking if the where clauses are not empty and add to the where clauses
-  if (filters.min_price != null && filters.max_price != null) {
+  // where varaibble checking if the where clauses are not empty and is a number then add to the where clauses
+  if (filters.min_price != null && filters.max_price != null && !isNaN(filters.min_price) && !isNaN(filters.max_price)) {
     whereClauses.push('w.price BETWEEN ? AND ?');
     values.push(filters.min_price, filters.max_price);
+  }
+
+  // where varaibble checking if the where clauses are not empty and is number then add to the where clauses
+  if (filters.min_rating != null && filters.max_rating != null && !isNaN(filters.min_rating) && !isNaN(filters.max_rating)) {
+    whereClauses.push('w.rating BETWEEN ? AND ?');
+    values.push(filters.min_rating, filters.max_rating);
+  }
+
+  // if the filters are not null and true or false check then add to the where clauses
+  if (filters.availability != null && (typeof filters.availability) === 'boolean') {
+    whereClauses.push('w.availability = ?');
+    values.push(filters.availability);
+  }
+
+  // if the filters are not null and true or false check then add to the where clauses
+  if (filters.smoking != null && (typeof filters.smoking) === 'boolean') {
+    whereClauses.push('w.smoking = ?');
+    values.push(filters.smoking);
   }
 
   // where varaibble checking if the where clauses are not empty and add to the where clauses
@@ -210,10 +288,12 @@ module.exports = {
   connection,
   registerCheckUserExists,
   getUserByEmail,
+  checkPropertyExistsByDetails,
   checkPropertyExists,
   checkPropertyOwnedByUser,
   checkWorkspaceExists,
   checkWorkspaceOwnedByUser,
+  checkWorkspaceExistsByDetails,
   deletePropertyById,
   buildPropertySearchQuery,
   buildWorkspaceSearchQuery,

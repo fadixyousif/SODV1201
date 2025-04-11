@@ -7,6 +7,7 @@ const crypto = require('node:crypto');
 // external modules
 const authentication = require('./module/authentication.js')
 const queries = require('./module/queries.js')
+const validations = require('./module/validations.js')
 
 // initialize express app
 const app = express()
@@ -31,13 +32,20 @@ app.post('/api/users/register', async (req, res) => {
   const { username, password, email, phone, role} = req.body;
 
   // check if the username, password, email, phone and role are provide and role is either 'coworker' or 'owner'
-  if (!username || !password || !email || !phone || !role && (role !== 'coworker' || role !== 'owner')) {
+  if (!username || !password || !email || !phone || !role) {
     // return a 400 error if any of the fields are missing
       return res.status(400).send({
           message: 'All fields are required',
           success: false
       });
   }
+
+
+  const checkRegistration = validations.isRegisterationValid({ username, password, email, phone, role });
+  if (!checkRegistration.success) {
+    return res.status(400).send(checkRegistration);
+  }
+
 
   // generate a random salt and hash the password using crypto module
   const salt = crypto.randomBytes(16).toString('hex');
@@ -97,8 +105,18 @@ app.post('/api/users/login', async (req, res) => {
   const { username, password } = req.body;
 
   // Check if username and password are provided
-  if (!username || !password) {
+  if (!username|| !password) {
     return res.status(400).send({ message: 'Username and password are required', success: false });
+  }
+
+  // check if the username and password are between 4 and 20 characters
+  if (username.length < 4 || username.length > 20) {
+    return res.status(400).send({ message: 'Username must be between 4 and 20 characters', success: false });
+  }
+
+  // check if the password is between 8 and 20 characters
+  if (password.length < 8 || password.length > 20) {
+    return res.status(400).send({ message: 'Password must be between 8 and 20 characters', success: false });
   }
 
   // try to handle the login process and error handling
@@ -138,22 +156,9 @@ app.get("/api/users/login/verify", authentication.verifyToken, (req, res) => {
   res.json({ success: true }); 
 });
 
-
-/*
- CREATE TABLE IF NOT EXISTS `accounts` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `salt` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `role` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci; 
-*/
-
 // GET request to get user profile
-app.get('/api/users/profile', authentication.verifyToken, async (req, res) => {
+app.get('/api/user/profile', authentication.verifyToken, async (req, res) => {
+  // get the profileID from the request body
   const { profileID } = req.body;
 
   // check if the profileID is provided
@@ -223,8 +228,101 @@ app.get('/api/users/profile', authentication.verifyToken, async (req, res) => {
 });
 
 // PUT request to update user profile
-app.put('/api/users/profile', authentication.verifyToken, (req, res) => {
-  res.send({ message: 'Work In Progress' })
+app.put('/api/user/profile', authentication.verifyToken, async (req, res) => {
+  const { username, email, phone, oldPassword, newPassword, newConfirmedPassword } = req.body;
+
+  // Check if all fields are provided
+  if (!username || !email || !phone || !oldPassword || !newPassword || !newConfirmedPassword) {
+    return res.status(400).send({ message: 'All fields are required', success: false });
+  }
+
+  // Validate profile data
+  const profileValidation = validations.isUpdatedDataProfileValid({ username, email, phone, oldPassword, newPassword, newConfirmedPassword });
+  if (!profileValidation.success) {
+    return res.status(400).send(profileValidation);
+  }
+
+  // Get profile from JWT token
+  const profileEmail = req.tokenEmail.email;
+
+  try {
+    // Fetch user from the database
+    const sql = 'SELECT * FROM `accounts` WHERE email = ?';
+    const [rows] = await connection.execute(sql, [profileEmail]);
+
+    if (rows.length === 0) {
+      return res.status(404).send({ message: 'Profile not found', success: false });
+    }
+
+    // Validate old password
+    const oldHashedPassword = authentication.hashPassword(oldPassword, rows[0].salt);
+    if (rows[0].password !== oldHashedPassword) {
+      return res.status(401).send({ message: 'Invalid old password', success: false });
+    }
+
+    // Prepare updates
+    const updates = [];
+    const values = [];
+
+    // check if the username is not the same as the current username
+    if (username !== rows[0].username) {
+      // check if the username already exists in the database
+      if (await queries.checkUsernameExists(username)) {
+        return res.status(400).send({ message: 'Username already exists', success: false });
+      }
+      // otherwise push the username to the updates array and the new username to the values array
+      updates.push('username = ?');
+      values.push(username);
+    }
+
+    // check if the email is not the same as the current email
+    if (email !== rows[0].email) {
+      // check if the email already exists in the database
+      if (await queries.checkEmailExists(email)) {
+        return res.status(400).send({ message: 'Email already exists', success: false });
+      }
+      // otherwise push the email to the updates array and the new email to the values array
+      updates.push('email = ?');
+      values.push(email);
+    }
+
+    // check if the phone is not the same as the current phone
+    if (phone !== rows[0].phone) {
+      updates.push('phone = ?');
+      values.push(phone);
+    }
+
+    // check if the new password is not the same as the old password
+    const newHashedPassword = authentication.hashPassword(newPassword, rows[0].salt);
+    if (newHashedPassword !== rows[0].password) {
+      updates.push('password = ?');
+      values.push(newHashedPassword);
+    }
+
+    if (updates.length === 0) {
+      return res.status(200).send({ message: 'No changes made', success: true });
+    }
+
+    // Update the database
+    const updateSql = `UPDATE \`accounts\` SET ${updates.join(', ')} WHERE email = ?`;
+    values.push(profileEmail);
+    const [result] = await connection.execute(updateSql, values);
+
+    // check if the user was updated successfully and send a success message
+    if (result.affectedRows > 0) {
+      // generate a new JWT token with the updated email if the email was changed
+      const newToken = email !== rows[0].email ? jwt.sign({ email }, process.env.JWT_SECRET_KEY, { expiresIn: 86400 }) : null;
+      // return the new token and a success message
+      return res.status(200).send({ message: 'Profile updated successfully', success: true, token: newToken });
+    } else {
+      // send a 400 status code and an error message if the user was not updated successfully
+      return res.status(400).send({ message: 'Profile update failed', success: false });
+    }
+  // catch any errors that occur during the profile update process and send a 500 status code and an error message
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    return res.status(500).send({ message: 'Internal server error', success: false });
+  }
 });
 
 // GET request to search for properties
@@ -269,6 +367,11 @@ app.get('/api/search', authentication.verifyToken, async (req, res) => {
         success: false
 			});
 		}
+  } else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
 		// else if there is an error getting the user then return a 400 error
 	} else {
 		return res.status(400).send({
@@ -404,10 +507,21 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
     if (user.role !== 'owner') {
       return res.status(403).send({ message: 'Unauthorized',  success: false });
     }
-  // else if there is an error getting the user then return a 400 error
+  // else if user is false then return a 403 error with user not found message
+  } else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
+    // else if there is an error getting the user then return a 400 error
   } else {
-    return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+    return res.status(400).send({
+      code: 1,
+      message: 'Internal server error',
+        success: false
+    });
   }
+
 
   // check if all the required fields are provided
   if (!name || !address || !address2 || !province || !city || !country || !postal || !neighbourhood || !sqft) {
@@ -422,16 +536,16 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
   // try handle the property creation process and error handling
   try {
     // make a sql variable to insert the new property into the database using the connection pool and provided values
-    const sql = 'INSERT INTO `properties` (ownerID, name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)';
+    const sql = 'INSERT INTO `properties` (ownerID, name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted) VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 0)';
     // execute the sql query with the provided values and get the result
     const [rows, fields] = await connection.execute(sql, [user.id, name, address, address2, province, city, country, postal, neighbourhood, garage ? 1 : 0, sqft, transport ? 1 : 0]);
     
-    // check if the property was inserted successfully and send a success message
+    // check if the property was inserted successfully and send a success message with the propertyID
     if (rows.affectedRows > 0) {
-      res.status(201).send({ message: 'Property created successfully', success: true });
+      res.status(201).send({ propertyID: rows.insertId, message: 'Property created successfully', success: true });
     } else {
       // send a 400 status code and an error message if the property was not inserted successfull
-      res.status(400).send({ message: 'Property creation failed', success: false });
+      res.status(400).send({  message: 'Property creation failed', success: false });
     }
   // catch any errors that occur during the property creation process and send a 500 status code and an error message
   } catch (error) {
@@ -453,10 +567,21 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
     if (user.role !== 'owner') {
       return res.status(403).send({ message: 'Unauthorized', success: false });
     }
-  // else if there is an error getting the user then return a 400 error
+  // else if user is false then return a 403 error with user not found message
+  } else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
+    // else if there is an error getting the user then return a 400 error
   } else {
-    return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+    return res.status(400).send({
+      code: 1,
+      message: 'Internal server error',
+        success: false
+    });
   }
+
 
   // check if all the required fields are provided
   if (!propertyID || !name || !address || !address2 || !province || !city || !country || !postal || !neighbourhood || !sqft) {
@@ -509,10 +634,21 @@ app.delete('/api/management/properties/property', authentication.verifyToken, as
     if (user.role !== 'owner') {
       return res.status(403).send({ message: 'Unauthorized', success: false });
     }
-  // else if there is an error getting the user then return a 400 error
+  // else if user is false then return a 403 error with user not found message
+  } else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
+    // else if there is an error getting the user then return a 400 error
   } else {
-    return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+    return res.status(400).send({
+      code: 1,
+      message: 'Internal server error',
+        success: false
+    });
   }
+
 
   if (!propertyID) {
     return res.status(400).send({ message: 'Property ID is required', success: false });
@@ -603,10 +739,21 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
     if (user.role !== 'owner') {
       return res.status(403).send({ message: 'Unauthorized', success: false });
     }
-  // else if there is an error getting the user then return a 400 error
+  // else if user is false then return a 403 error with user not found message
+  } else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
+    // else if there is an error getting the user then return a 400 error
   } else {
-    return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+    return res.status(400).send({
+      code: 1,
+      message: 'Internal server error',
+        success: false
+    });
   }
+
 
 
   // check if all the required fields are provided
@@ -637,7 +784,7 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
 
     if (rows.affectedRows > 0) {
       // send a success message if the workspace was inserted successfully
-      res.status(201).send({ message: 'Workspace created successfully', success: true });
+      res.status(201).send({ workspaceID: rows.insertId, message: 'Workspace created successfully', success: true });
     }
     // send a 400 status code and an error message if the workspace was not inserted successfully
     else {
@@ -662,11 +809,21 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
       if (user.role !== 'owner') {
         return res.status(403).send({ message: 'Unauthorized', success: false });
       }
-    // else if there is an error getting the user then return a 400 error
+  // else if user is false then return a 403 error with user not found message
+    } else if(user === false){
+      return res.status(403).send({
+        message: 'User not found',
+        success: false
+      });
+      // else if there is an error getting the user then return a 400 error
     } else {
-      return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+      return res.status(400).send({
+        code: 1,
+        message: 'Internal server error',
+          success: false
+      });
     }
-  
+
     // check if all the required fields are provided
     if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || delisted === undefined) {
       return res.status(400).send({ message: 'All fields are required', success: false });
@@ -690,9 +847,9 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     // try handle the workspace update process and error handling
     try {
       // make a sql variable to update the workspace in the database using the connection pool and provided values
-      const sql = 'UPDATE `workspaces` SET name = ?, type = ?, term = ?, sqft = ?, capacity = ?, price = ?, rating = ?, delisted = ?, image = ?, propertyID = ? WHERE workspaceID = ?';
+      const sql = 'UPDATE `workspaces` SET name = ?, type = ?, term = ?, capacity = ?, price = ?, rating = ?, delisted = ?, image = ?, propertyID = ? WHERE workspaceID = ?';
       // execute the sql query with the provided values and get the result
-      const [rows, fields] = await connection.execute(sql, [name, type, term, sqft, capacity, price, rating, delisted ? 1 : 0, image, propertyID, workspaceID]);
+      const [rows, fields] = await connection.execute(sql, [name, type, term, capacity, price, rating, delisted ? 1 : 0, image, propertyID, workspaceID]);
   
       // check if the workspace was updated successfully and send a success message
       if (rows.affectedRows > 0) {
@@ -707,7 +864,7 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     }
 });
 
-// PUT request to delete a workspace
+// DELETE request to delete a workspace
 app.delete('/api/management/workspaces/workspace', authentication.verifyToken, async (req, res) => {
   // get the workspaceID from the request body
   const { workspaceID } = req.body;
@@ -721,10 +878,19 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
     if (user.role !== 'owner') {
       return res.status(403).send({ message: 'Unauthorized', success: false });
     }
-  // else if there is an error getting the user then return a 400 error 
-  }
-  else {
-    return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+  // else if user is false then return a 403 error with user not found message
+} else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
+  // else if there is an error getting the user then return a 400 error
+  } else {
+    return res.status(400).send({
+      code: 1,
+      message: 'Internal server error',
+        success: false
+    });
   }
 
   

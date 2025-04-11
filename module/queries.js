@@ -25,6 +25,38 @@ async function registerCheckUserExists(username, email = 'NULL') {
   }
 }
 
+async function checkUsernameExists(username) {
+  // try handle the registration process and error handling
+  try {
+    // sql variable to check if the username already exists in the database using the connection pool and provided values
+    const sql = 'SELECT * FROM `accounts` WHERE username = ?';
+    // execute the sql query with the provided values and get the result
+    const [rows, fields] = await connection.execute(sql, [username]);
+
+    return rows.length > 0; // returns true if user exists
+  // catch any errors that occur during the registration process and send a 500 status code and an error message
+  } catch (error) {
+    console.error('Error checking user existence:', error);
+    return false; // assume user does not exist in case of error
+  }
+}
+
+async function checkEmailExists(email) {
+  // try handle the registration process and error handling
+  try {
+    // sql variable to check if the email already exists in the database using the connection pool and provided values
+    const sql = 'SELECT * FROM `accounts` WHERE email = ?';
+    // execute the sql query with the provided values and get the result
+    const [rows, fields] = await connection.execute(sql, [email]);
+
+    return rows.length > 0; // returns true if user exists
+  // catch any errors that occur during the registration process and send a 500 status code and an error message
+  } catch (error) {
+    console.error('Error checking user existence:', error);
+    return false; // assume user does not exist in case of error
+  }
+}
+
 async function getUserByEmail(email) {
   // try handle the user fetching process and error handling
   try {
@@ -33,8 +65,8 @@ async function getUserByEmail(email) {
     // execute the sql query with the provided values and get the result
     const [rows, fields] = await connection.execute(sql, [email]);
 
-    // check if the user was found successfully and return the user object or null if not found
-    return rows.length > 0 ? rows[0] : null; // returns user object or null if not found
+    // check if the user was found successfully and return the user object or false if not found
+    return rows.length > 0 ? rows[0] : false; // returns user object or null if not found
   // catch any errors that occur during the user fetching process and send a 500 status code and an error message
   } catch (error) {
     console.error('Error fetching user by email:', error);
@@ -288,6 +320,8 @@ module.exports = {
   connection,
   registerCheckUserExists,
   getUserByEmail,
+  checkUsernameExists,
+  checkEmailExists,
   checkPropertyExistsByDetails,
   checkPropertyExists,
   checkPropertyOwnedByUser,

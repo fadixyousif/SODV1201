@@ -460,40 +460,6 @@ app.get('/api/search', authentication.verifyToken, async (req, res) => {
 });
 
 // Property Management Endpoints
-
-// GET request to get a single property by ID
-app.get('/api/properties/property', authentication.verifyToken, async (req, res) => {
-  const { propertyID } = req.body;
-
-  // check if the propertyID is provided
-  if (!propertyID) {
-    return res.status(400).send({ message: 'Property ID is required', success: false });
-  }
-
-  // try handle the property fetching process and error handling
-  try {
-    // make a sql variable to get the property by ID from the database using the connection pool and provided values
-    const sql = 'SELECT * FROM `properties` WHERE propertyID = ? AND delisted = 0';
-    // execute the sql query with the provided values and get the result
-    const [rows, fields] = await connection.execute(sql, [propertyID]);
-
-    // check if the property was found successfully and send it back to the client
-    if (rows.length > 0) {
-      
-      rows.forEach(row => {
-        delete row.delisted;
-      });
-
-      res.status(200).send({ property: rows[0], success: true });
-    } else {
-      res.status(404).send({ message: 'Property not found', success: false });
-    }
-  } catch (error) {
-    console.error('Error fetching property:', error);
-    res.status(500).send({ message: 'Internal server error', success: false });
-  }
-});
-
 // POST request to crete a new property
 app.post('/api/management/properties/property/', authentication.verifyToken, async (req, res) => {
   const { name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport } = req.body;
@@ -700,26 +666,28 @@ app.get('/api/workspaces/workspace', authentication.verifyToken, async (req, res
     return res.status(400).send({ message: 'Workspace ID is required', success: false });
   }
 
-
-
   // try handle the workspace fetching process and error handling
   try {
     // make a sql variable to get the workspace by ID from the database using the connection pool and provided values
-    const sql = 'SELECT * FROM `workspaces` WHERE workspaceID = ? AND delisted = 0';
+    const sql = 'SELECT w.*, p.name AS property_name, p.address,  p.city,  p.province, p.country, p.postal, p.neighbourhood, p.garage, p.sqft, p.transport FROM workspaces w JOIN properties p ON w.propertyID = p.propertyID WHERE w.workspaceID = ? AND w.delisted = 0';
     // execute the sql query with the provided values and get the result
     const [rows, fields] = await connection.execute(sql, [workspaceID]);
 
     // check if the workspace was found successfully and send it back to the client
     if (rows.length > 0) {
+      // remove the delisted property from the workspaces array should not be sent to the client
       rows.forEach(row => {
         delete row.delisted;
       });
 
+      // return the workspace and the property details
       res.status(200).send({ workspace: rows[0], success: true });
     } else {
+      // else send a 404 status code and an error message if the workspace was not found
       res.status(404).send({ message: 'Workspace not found', success: false });
     }
   } catch (error) {
+    // catch any errors that occur during the workspace fetching process and send a 500 status code and an error message
     console.error('Error fetching workspace:', error);
     res.status(500).send({ message: 'Internal server error', success: false });
   }
@@ -879,7 +847,7 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
       return res.status(403).send({ message: 'Unauthorized', success: false });
     }
   // else if user is false then return a 403 error with user not found message
-} else if(user === false){
+  } else if(user === false){
     return res.status(403).send({
       message: 'User not found',
       success: false
@@ -935,5 +903,69 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
     }
   } else {
     return res.status(400).send({ message: 'Workspace does not exist', success: false });
+  }
+});
+
+// GET request to get all workspaces for a property for property management of the property owner even hidden workspaces and properties
+app.get('/api/management/owned/properties-workspaces', authentication.verifyToken, async (req, res) => {
+
+  // get the user from the provided email by jwt token
+  const user = await queries.getUserByEmail(req.tokenEmail.email);
+
+  // check if user exists
+  if (user) {
+    // check if the user is not an owner then return a 403 error
+    if (user.role !== 'owner') {
+      return res.status(403).send({ message: 'Unauthorized', success: false });
+    }
+  // else if user is false then return a 403 error with user not found message
+  } else if(user === false){
+    return res.status(403).send({
+      message: 'User not found',
+      success: false
+    });
+  // else if there is an error getting the user then return a 400 error
+  } else {
+    return res.status(400).send({
+      code: 1,
+      message: 'Internal server error',
+        success: false
+    });
+  }
+
+  // try handle the property fetching process and error handling
+  try {
+
+    // make a sql variable to get the properties for the user from the database using the connection pool and provided values
+    const sql = 'SELECT * FROM `properties` WHERE ownerID = ?';
+    // execute the sql query with the provided values and get the result
+    const [properties, fields] = await connection.execute(sql, [user.id]);
+
+    // check if the properties were found successfully and then loop to get the workspaces for each property
+    if (properties.length > 0) {
+      const propertiesData = [];
+
+      for (const property of properties) {
+        // make a sql variable to get the workspaces for each property from the database using the connection pool and provided values
+        const sql = 'SELECT * FROM `workspaces` WHERE propertyID = ?';
+        // execute the sql query with the provided values and get the result
+        const [workspaces] = await connection.execute(sql, [property.propertyID]);
+
+        // push the property and the workspaces to the propertiesData array
+        propertiesData.push({
+          ...property,
+          workspaces
+        });
+      }
+
+      // send the properties and workspaces back to the client
+      res.status(200).send({ properties: propertiesData, success: true });
+    } else {
+      // send a 404 status code and an error message if the properties or workspaces onwed
+      return res.status(404).send({ message: 'No properties owned', success: false });
+    }
+  } catch (error) {
+    console.error('Error fetching owned properties and workspaces:', error);
+    res.status(500).send({ message: 'Internal server error', success: false });
   }
 });

@@ -10,115 +10,171 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/listing.css">
-    
 </head>
 <body>
-    <ul class="nav">
-        <span class="company-name"><a href="#">RentableBnB</a></span>
-        <div class="navigation">
-                        <li><a href="./index.html">Home</a></li>
 
-            <li><a href="listing.html">Listing</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="authentication.html" class="active">Login/Signup</a></li>
-        </div>
-    </ul>
-
-    
     <div class="search-container">
-      <div class="search-bar">
-          <input type="text" placeholder="Search">
-          <div class="dropdown">
-              <li class="dropbtn"><a href="#" class="filters-btn">Filters</a></li>
-              <div class="main-container">
-                  <div class="dropdown-content">
-                      <div class="filters-container">
-                          <h2>Filters</h2>
-
-                          <!-- Price Filter -->
-                          <div class="filter-section">
-                              <h3>Price Range</h3>
-                              <div class="slider price-slider">
-                                  <div class="progress"></div>
-                              </div>
-                              <div class="range-input">
-                                  <input type="range" class="range-min" min="0" max="1000" value="250" step="10" data-filter="price">
-                                  <input type="range" class="range-max" min="0" max="1000" value="750" step="10" data-filter="price">
-                              </div>
-                              <div class="values">
-                                  <p>Min: <span class="price-display" id="min-price">$250</span></p>
-                                  <p>Max: <span class="price-display" id="max-price">$750</span></p>
-                              </div>
-                          </div>
-
-                          <!-- Distance Filter -->
-                          <div class="filter-section">
-                              <h3>Distance (miles)</h3>
-                              <div class="slider distance-slider">
-                                  <div class="progress"></div>
-                              </div>
-                              <div class="range-input">
-                                  <input type="range" class="range-min" min="0" max="50" value="5" step="1" data-filter="distance">
-                                  <input type="range" class="range-max" min="0" max="50" value="25" step="1" data-filter="distance">
-                              </div>
-                              <div class="values">
-                                  <p>Min: <span class="distance-display" id="min-distance">5</span> miles</p>
-                                  <p>Max: <span class="distance-display" id="max-distance">25</span> miles</p>
-                              </div>
-                          </div>
-
-                          <!-- Rating Filter -->
-                          <div class="filter-section">
-                              <h3>Rating</h3>
-                              <div class="slider rating-slider">
-                                  <div class="progress"></div>
-                              </div>
-                              <div class="range-input">
-                                  <input type="range" class="range-min" min="1" max="5" value="3" step="0.5" data-filter="rating">
-                                  <input type="range" class="range-max" min="1" max="5" value="5" step="0.5" data-filter="rating">
-                              </div>
-                              <div class="values">
-                                  <p>Min: <span class="rating-display" id="min-rating">3</span> ★</p>
-                                  <p>Max: <span class="rating-display" id="max-rating">5</span> ★</p>
-                              </div>
-                              <div class="rating-stars">
-                                  <span class="star active">★</span>
-                                  <span class="star active">★</span>
-                                  <span class="star active">★</span>
-                                  <span class="star active">★</span>
-                                  <span class="star active">★</span>
-                              </div>
-                          </div>
-
-                          <button class="apply-btn">Apply Filters</button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      <div class="category-buttons">
-          <button>Meeting Rooms</button>
-          <button>Desks</button>
-          <button>Offices</button>
-          <button>Printers</button>
-          <button>Copiers</button>
-          <button>Stationeries</button>
-      </div>
-  </div>
-
-  <div class="item-grid">
-  </div>
-
-  <div class="footer-content">
-    <footer>
-        <p>© <span class="current-date">2025</span> Group 4. All Rights Reserved.</p>
-        <div class="social-icons">
-            <button><i class="fab fa-facebook-f"></i></button>
-            <button><i class="fab fa-instagram"></i></button>
-            <button><i class="fab fa-twitter"></i></button>
+        <div class="search-bar">
+            <input type="text" placeholder="Search">
+            <div class="dropdown">
+             </div>   
+        </div>        
+    </div>            
+    <div class="filter-container">
+        <div class="filter-header">
+            <h2 class="filter-title">Filter Results</h2>
+            <div class="filter-actions">
+                <button class="btn btn-primary" id="filter-toggle">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.5 4.5H14.5M4.5 8H11.5M6.5 11.5H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Filters
+                    <span class="badge">1</span>
+                </button>
+                <button class="btn">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 4V12M4 8H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Save Search
+                </button>
+                <button class="btn" id="close-btn">✕</button>
+            </div>
         </div>
-    </footer>
-  </div>
+    </div>
+
+    <div class="filter-dropdown" id="filter-dropdown">
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Neigborhood</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">North</div>
+                <div class="bathroom-option">South</div>
+                <div class="bathroom-option">East</div>
+                <div class="bathroom-option">West</div>
+                <div class="bathroom-option">North-West</div>
+                <div class="bathroom-option">North-East</div>
+                <div class="bathroom-option">South-West</div>
+                <div class="bathroom-option">South-East</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Type of Property</h3>
+            <div class="property-grid">
+                <div class="property-type">Apartment</div>
+                <div class="property-type">Duplex</div>
+                <div class="property-type">Acreage</div>
+                <div class="property-type">Condo Unit</div>
+                <div class="property-type">Main Floor</div>
+                <div class="property-type active">Office Space</div>
+                <div class="property-type">Loft</div>
+                <div class="property-type">Basement</div>
+                <div class="property-type">Parking Spot</div>
+                <div class="property-type">House</div>
+                <div class="property-type">Room For Rent</div>
+                <div class="property-type">Storage</div>
+                <div class="property-type">Townhouse</div>
+                <div class="property-type">Mobile</div>
+                <div class="property-type">Vacation Home</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Monthly Rent Range</h3>
+            <div class="rent-range">
+                <div class="price-inputs">
+                    <div class="price-input">
+                        <label for="min-price">$</label>
+                        <input type="text" id="min-price" placeholder="0" value="0">
+                    </div>
+                    <div class="price-divider">to</div>
+                    <div class="price-input">
+                        <label for="max-price">$</label>
+                        <input type="text" id="max-price" placeholder="Max">
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-track"></div>
+                    <input type="range" min="0" max="10000" value="2500" class="slider" id="min-slider">
+                    <input type="range" min="0" max="10000" value="7500" class="slider" id="max-slider">
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Bedrooms</h3>
+            <div class="bedroom-grid">
+                <div class="bedroom-option">Studio</div>
+                <div class="bedroom-option">1 Bed</div>
+                <div class="bedroom-option">1 + Den</div>
+                <div class="bedroom-option">2 Beds</div>
+                <div class="bedroom-option">2 + Den</div>
+                <div class="bedroom-option">3 Beds</div>
+                <div class="bedroom-option">3 + Den</div>
+                <div class="bedroom-option">4+</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Bathrooms</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">1</div>
+                <div class="bathroom-option">1.5</div>
+                <div class="bathroom-option">2</div>
+                <div class="bathroom-option">2.5</div>
+                <div class="bathroom-option">3+</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Garage</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">Yes</div>
+                <div class="bathroom-option">No</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Smoking</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">Yes</div>
+                <div class="bathroom-option">No</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Acessibility by public transport</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">Yes</div>
+                <div class="bathroom-option">Fairly</div>
+                <div class="bathroom-option">No</div>  
+            </div>
+        </div>
+
+        
+
+        <div class="filter-dropdown-actions">
+            <button class="btn" id="cancel-btn">Cancel</button>
+            <button class="btn btn-primary" id="apply-btn">Apply Filters</button>
+        </div>
+    </div>
+
+    <div class="item-grid">
+    
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="footer-content">
+        <footer>
+            <p>© <span class="current-date">2025</span> Group 4. All Rights Reserved.</p>
+            <div class="social-icons">
+                <button><i class="fab fa-facebook-f"></i></button>
+                <button><i class="fab fa-instagram"></i></button>
+                <button><i class="fab fa-twitter"></i></button>
+            </div>
+        </footer>
+      </div>
+    <script src="listing.js"></script>
 </body>
 </html>

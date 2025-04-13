@@ -495,6 +495,12 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
     return res.status(400).send({ message: 'All fields are required', success: false });
   }
 
+  // property validation check
+  const propertyValidation = validations.isPropertyDataValid({ name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted: false });
+  if(!propertyValidation.success) {
+    return res.status(400).send({ message: 'Invalid property data', success: false });
+  }
+
   // Check if a property with the same name and address already exists
   if (await queries.checkPropertyExistsByDetails(name, address, city, postal)) {
     return res.status(400).send({ message: 'Property with the same details already exists', success: false });
@@ -523,7 +529,7 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
 
 // PUT request to update a property
 app.put('/api/management/properties/property', authentication.verifyToken, async (req, res) => {
-  const { name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, propertyID } = req.body;
+  const { name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, propertyID, delisted } = req.body;
 
   // get the user from the provided email by jwt token
   const user = await queries.getUserByEmail(req.tokenEmail.email);
@@ -551,11 +557,15 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
 
 
   // check if all the required fields are provided
-  if (!propertyID || !name || !address || !address2 || !province || !city || !country || !postal || !neighbourhood || !sqft) {
+  if (!propertyID || !name || !address || !address2 || !province || !city || !country || !postal || !neighbourhood || !sqft || !delisted === undefined) {
     return res.status(400).send({ message: 'All fields are required', success: false });
   }
 
-
+  // property validation check
+  const propertyValidation = validations.isPropertyDataValid({ name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted });
+  if(!propertyValidation.success) {
+    return res.status(400).send({ message: 'Invalid property data', success: false });
+  }
 
   // check if the property exists
   if (!await queries.checkPropertyExists(propertyID)) {
@@ -570,9 +580,9 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
   // try handle the property update process and error handling
   try { 
     // make a sql variable to update the property in the database using the connection pool and provided values
-    const sql = 'UPDATE `properties` SET name = ?, address = ?, address2 = ?, province = ?, city = ?, country = ?, postal = ?, neighbourhood = ?, garage = ?, sqft = ?, transport = ? WHERE propertyID = ?';
+    const sql = 'UPDATE `properties` SET name = ?, address = ?, address2 = ?, province = ?, city = ?, country = ?, postal = ?, neighbourhood = ?, garage = ?, sqft = ?, transport = ?, delisted = ? WHERE propertyID = ?';
     // execute the sql query with the provided values and get the result
-    const [rows, fields] = await connection.execute(sql, [name, address, address2, province, city, country, postal, neighbourhood, garage ? 1 : 0, sqft, transport ? 1 : 0, propertyID]);
+    const [rows, fields] = await connection.execute(sql, [name, address, address2, province, city, country, postal, neighbourhood, garage ? 1 : 0, sqft, transport ? 1 : 0, delisted ? 1 : 0, propertyID]);
 
     // check if the property was updated successfully and send a success message
     if (rows.affectedRows > 0) {
@@ -752,11 +762,15 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
     });
   }
 
-
-
   // check if all the required fields are provided
   if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || !image || delisted === undefined) {
     return res.status(400).send({ message: 'All fields are required', success: false });
+  }
+
+  // workspace validation check
+  const workspaceValidation = validations.isWorkspaceDataValid({ name, type, term, sqft, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted });
+  if(!workspaceValidation.success) {
+    return res.status(400).send(workspaceValidation);
   }
 
   // check if the property exists
@@ -826,7 +840,13 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || delisted === undefined) {
       return res.status(400).send({ message: 'All fields are required', success: false });
     }
-  
+
+    // workspace validation check
+    const workspaceValidation = validations.isWorkspaceDataValid({ name, type, term, sqft, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted });
+    if(!workspaceValidation.success) {
+      return res.status(400).send(workspaceValidation);
+    }
+
     // check if the property exists
     if (!await queries.checkPropertyExists(propertyID)) {
       return res.status(400).send({ message: 'Property does not exist', success: false });
@@ -890,13 +910,12 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
         success: false
     });
   }
-
   
   // check if the workspaceID is provided
   if (!workspaceID) {
     return res.status(400).send({ message: 'Workspace ID is required', success: false });
   }
-  
+
   // check if the workspace is owned by the user
   if (!await queries.checkWorkspaceOwnedByUser(user.id, workspaceID)) {
     return res.status(403).send({ message: 'User does not own the workspace', success: false });

@@ -988,16 +988,11 @@ app.get('/api/management/owned/properties-workspaces', authentication.verifyToke
         });
       }
 
-      // get owner name for management purposes
-      const ownerSql = 'SELECT fullname FROM `accounts` WHERE id = ?';
-      const [owner] = await connection.execute(ownerSql, [user.id]);
-      // add the owner name to the propertiesData array
-
       // send the properties and workspaces back to the client
-      res.status(200).send({ owner_name: owner[0].fullname, properties: propertiesData, success: true });
+      res.status(200).send({ owner_name: user.fullname, properties: propertiesData, success: true });
     } else {
       // send a 404 status code and an error message if the properties or workspaces onwed
-      return res.status(404).send({ message: 'No properties owned', success: false });
+      return res.status(404).send({ owner_name: user.fullname, message: 'No properties owned', success: false });
     }
   } catch (error) {
     console.error('Error fetching owned properties and workspaces:', error);

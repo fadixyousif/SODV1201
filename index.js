@@ -64,7 +64,7 @@ app.post('/api/users/register', async (req, res) => {
           // make a sql variable to insert the new user into the database using the connection pool and provided values
           const sql = 'INSERT INTO `accounts` (fullname, username, password, salt, email, phone, role) VALUES (?, ?, ?, ?, ?, ?, ?)';
           // execute the sql query with the provided values and get the result
-          const [rows, fields] = await connection.execute(sql, [username, hashedPassword, salt, email, phone, role]);
+          const [rows, fields] = await connection.execute(sql, [fullname, username, hashedPassword, salt, email, phone, role]);
 
           // check if the user was inserted successfully and send a success message
           if (rows.affectedRows > 0) {
@@ -896,17 +896,7 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
   if (!workspaceID) {
     return res.status(400).send({ message: 'Workspace ID is required', success: false });
   }
-
-  // check if the property exists
-  if (!await queries.checkPropertyExists(propertyID)) {
-    return res.status(400).send({ message: 'Property does not exist', success: false });
-  }
-
-  // check if the user does not owns the workspace
-  if (!await queries.checkPropertyOwnedByUser(user.id, propertyID)) {
-    return res.status(403).send({ message: 'User does not own the property', success: false });
-  }
-
+  
   // check if the workspace is owned by the user
   if (!await queries.checkWorkspaceOwnedByUser(user.id, workspaceID)) {
     return res.status(403).send({ message: 'User does not own the workspace', success: false });

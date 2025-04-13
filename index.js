@@ -810,7 +810,7 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
 
 // PUT request to edit a workspace
 app.put('/api/management/workspaces/workspace', authentication.verifyToken, async (req, res) => {
-  const { name, type, term, sqft, capacity, price, propertyID, rating, delisted, workspaceID, image } = req.body;
+  const { name, type, term, sqft, capacity, price, propertyID, rating, delisted, workspaceID, image, smoking_allowed, avalability_date } = req.body;
   
     // get the user from the provided email by jwt token
     const user = await queries.getUserByEmail(req.tokenEmail.email);
@@ -865,9 +865,9 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     // try handle the workspace update process and error handling
     try {
       // make a sql variable to update the workspace in the database using the connection pool and provided values
-      const sql = 'UPDATE `workspaces` SET name = ?, type = ?, term = ?, capacity = ?, price = ?, rating = ?, delisted = ?, image = ?, propertyID = ? WHERE workspaceID = ?';
+      const sql = 'UPDATE `workspaces` SET name = ?, type = ?, term = ?, capacity = ?, price = ?, rating = ?, delisted = ?, image = ?, propertyID = ?, smoking_allowed = ?, availability_date = ?  WHERE workspaceID = ?';
       // execute the sql query with the provided values and get the result
-      const [rows, fields] = await connection.execute(sql, [name, type, term, capacity, price, rating, delisted ? 1 : 0, image, propertyID, workspaceID]);
+      const [rows, fields] = await connection.execute(sql, [name, type, term, capacity, price, rating, delisted ? 1 : 0, image, propertyID, smoking_allowed ? 1 : 0, avalability_date, workspaceID]);
   
       // check if the workspace was updated successfully and send a success message
       if (rows.affectedRows > 0) {

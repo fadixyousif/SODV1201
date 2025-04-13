@@ -29,10 +29,10 @@ app.listen(PORT, () => {
 // POST request to register a new user
 app.post('/api/users/register', async (req, res) => {
   // get the username, password, email, phone and role from the request body
-  const { username, password, email, phone, role} = req.body;
+  const { fullname, username, password, email, phone, role} = req.body;
 
   // check if the username, password, email, phone and role are provide and role is either 'coworker' or 'owner'
-  if (!username || !password || !email || !phone || !role) {
+  if (!fullname || !username || !password || !email || !phone || !role) {
     // return a 400 error if any of the fields are missing
       return res.status(400).send({
           message: 'All fields are required',
@@ -41,7 +41,7 @@ app.post('/api/users/register', async (req, res) => {
   }
 
 
-  const checkRegistration = validations.isRegisterationValid({ username, password, email, phone, role });
+  const checkRegistration = validations.isRegisterationValid({ fullname, username, password, email, phone, role });
   if (!checkRegistration.success) {
     return res.status(400).send(checkRegistration);
   }
@@ -62,7 +62,7 @@ app.post('/api/users/register', async (req, res) => {
       */
       if (!await queries.registerCheckUserExists(username, email)) {
           // make a sql variable to insert the new user into the database using the connection pool and provided values
-          const sql = 'INSERT INTO `accounts` (username, password, salt, email, phone, role) VALUES (?, ?, ?, ?, ?, ?)';
+          const sql = 'INSERT INTO `accounts` (fullname, username, password, salt, email, phone, role) VALUES (?, ?, ?, ?, ?, ?, ?)';
           // execute the sql query with the provided values and get the result
           const [rows, fields] = await connection.execute(sql, [username, hashedPassword, salt, email, phone, role]);
 
@@ -140,7 +140,7 @@ app.post('/api/users/login', async (req, res) => {
         }); 
 
         // return the token and a success message
-        res.status(201).send({ message: 'Login successful', token, success: true});
+        res.status(201).send({ message: `Welcome ${rows[0].fullname}`, token, success: true});
     } else {
       return res.status(401).send({ message: 'Invalid username or password', success: false });
     }
@@ -209,6 +209,7 @@ app.get('/api/user/profile', authentication.verifyToken, async (req, res) => {
       // send the user profile, properties and workspaces back to the client
       res.status(200).send({
         id: rows[0].id,
+        fullname: rows[0].fullname,
         username: rows[0].username,
         email: rows[0].email,
         phone: rows[0].phone,
@@ -669,7 +670,36 @@ app.get('/api/workspaces/workspace', authentication.verifyToken, async (req, res
   // try handle the workspace fetching process and error handling
   try {
     // make a sql variable to get the workspace by ID from the database using the connection pool and provided values
-    const sql = 'SELECT w.*, p.name AS property_name, p.address,  p.city,  p.province, p.country, p.postal, p.neighbourhood, p.garage, p.sqft, p.transport FROM workspaces w JOIN properties p ON w.propertyID = p.propertyID WHERE w.workspaceID = ? AND w.delisted = 0';
+    const sql = `
+  SELECT 
+    a.fullname AS owner_name, 
+    a.phone AS owner_phone,
+    w.*, 
+    p.name AS property_name, 
+    p.address, 
+    p.city, 
+    p.province, 
+    p.country, 
+    p.postal, 
+    p.neighbourhood, 
+    p.garage, 
+    p.sqft, 
+    p.transport
+  FROM 
+    workspaces w 
+  JOIN 
+    properties p 
+  ON 
+    w.propertyID = p.propertyID 
+  JOIN 
+    accounts a 
+  ON 
+    p.ownerID = a.id 
+  WHERE 
+    w.workspaceID = ? 
+  AND 
+    w.delisted = 0
+  `;
     // execute the sql query with the provided values and get the result
     const [rows, fields] = await connection.execute(sql, [workspaceID]);
 

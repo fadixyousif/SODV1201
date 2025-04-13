@@ -190,7 +190,7 @@ app.get('/api/user/profile', authentication.verifyToken, async (req, res) => {
       // loop through the properties array and get the workspaces for each property
       for (const property of properties) {
         // make a sql variable to get the workspaces for each property and not delisted
-        const workspacesSql = 'SELECT * FROM `workspaces` WHERE ownerID = ? AND propertyID = ? AND delisted = 0 ';
+        const workspacesSql = 'SELECT * FROM `workspaces` WHERE ownerID = ? AND propertyID = ? AND delisted = 0;';
         // execute the sql query with the provided values and get the result
         const [workspaces] = await connection.execute(workspacesSql, [profileID, property.propertyID]);
   
@@ -916,13 +916,16 @@ app.delete('/api/management/workspaces/workspace', authentication.verifyToken, a
     return res.status(400).send({ message: 'Workspace ID is required', success: false });
   }
 
-  // check if the workspace is owned by the user
-  if (!await queries.checkWorkspaceOwnedByUser(user.id, workspaceID)) {
-    return res.status(403).send({ message: 'User does not own the workspace', success: false });
-  }
+
 
   // check if the workspace exists
   if (await queries.checkWorkspaceExists(workspaceID)) {
+
+    // check if the workspace is owned by the user
+    if (!await queries.checkWorkspaceOwnedByUser(user.id, workspaceID)) {
+      return res.status(403).send({ message: 'User does not own the workspace', success: false });
+    }
+
     try {
       // make a sql variable to delete the workspace from the database using the connection pool and provided values
       const sql = 'DELETE FROM `workspaces` WHERE workspaceID = ?';

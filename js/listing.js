@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
       updateSliderTrack();
   });
 
-  // Initialize slider positions
   updateSliderTrack();
 
   // Update filter badge count
@@ -142,3 +141,60 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('Search saved!');
   });
 });
+
+function searchLocation() {
+    const address = document.getElementById('address').value;
+    const country = document.getElementById('country').value;
+    const result = document.getElementById('result');
+    
+    if (address && country) {
+      result.style.display = 'block';
+      result.innerHTML = `Searching for: ${address}, ${country}`;
+    } else {
+      alert('Please enter both address and country');
+    }
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('startDate').min = today;
+  document.getElementById('endDate').min = today;
+
+  function updateAvailability() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const availabilityDiv = document.getElementById('availability');
+    
+    if (startDate && endDate) {
+      if (new Date(endDate) < new Date(startDate)) {
+        availabilityDiv.style.display = 'block';
+        availabilityDiv.innerHTML = 'Error: End date must be after start date';
+        availabilityDiv.style.color = 'red';
+        return;
+      }
+      
+      const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+      });
+      const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric'
+      });
+      
+      availabilityDiv.style.display = 'block';
+      availabilityDiv.innerHTML = `Available from ${formattedStartDate} to ${formattedEndDate}`;
+      availabilityDiv.style.color = 'green';
+    } else if (startDate) {
+      availabilityDiv.style.display = 'block';
+      availabilityDiv.innerHTML = 'Please select an end date';
+      availabilityDiv.style.color = 'blue';
+    } else if (endDate) {
+      availabilityDiv.style.display = 'block';
+      availabilityDiv.innerHTML = 'Please select a start date';
+      availabilityDiv.style.color = 'blue';
+    } else {
+      availabilityDiv.style.display = 'none';
+    }
+  }

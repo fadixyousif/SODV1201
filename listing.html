@@ -44,9 +44,53 @@
 
     <div class="filter-dropdown" id="filter-dropdown">
 
+
         <div class="filter-section">
-            <h3 class="filter-section-title">Neigborhood</h3>
+            <h3 class="filter-section-title">Country</h3>
+            <div class="search-containerr">
+                <input class="inputt" type="text" id="country" placeholder="Enter country">
+                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
+                <div id="result" class="result"></div>
+             </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Address</h3>
+            <div class="search-containerr">
+                <input class="inputt" type="text" id="address" placeholder="Enter address">
+                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
+                <div id="result" class="result"></div>
+             </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Postal</h3>
+            <div class="search-containerr">
+                <input class="inputt" type="text" id="Postal" placeholder="Post code">
+                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
+                <div id="result" class="result"></div>
+             </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Province</h3>
             <div class="bathroom-grid">
+                <div class="bathroom-option">Alberta</div>
+                <div class="bathroom-option">British Columbia</div>
+                <div class="bathroom-option">Manitoba</div>
+                <div class="bathroom-option">New Brunswick</div>
+                <div class="bathroom-option">Nova scotia</div>
+                <div class="bathroom-option">Ontario</div>
+                <div class="bathroom-option">Prince Edwards Island</div>
+                <div class="bathroom-option">Quebec</div>
+                <div class="bathroom-option">Saskatchewan</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3 class="filter-section-title">Neighbourhood</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">Downtown</div>
                 <div class="bathroom-option">North</div>
                 <div class="bathroom-option">South</div>
                 <div class="bathroom-option">East</div>
@@ -127,6 +171,17 @@
         </div>
 
         <div class="filter-section">
+            <h3 class="filter-section-title">Capacity</h3>
+            <div class="bathroom-grid">
+                <div class="bathroom-option">1</div>
+                <div class="bathroom-option">2</div>
+                <div class="bathroom-option">3</div>
+                <div class="bathroom-option">4</div>
+                <div class="bathroom-option">5</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
             <h3 class="filter-section-title">Garage</h3>
             <div class="bathroom-grid">
                 <div class="bathroom-option">Yes</div>
@@ -137,25 +192,47 @@
         <div class="filter-section">
             <h3 class="filter-section-title">Smoking</h3>
             <div class="bathroom-grid">
-                <div class="bathroom-option">Yes</div>
-                <div class="bathroom-option">No</div>
+                <div class="bathroom-option">True</div>
+                <div class="bathroom-option">False</div>
             </div>
         </div>
 
         <div class="filter-section">
             <h3 class="filter-section-title">Acessibility by public transport</h3>
             <div class="bathroom-grid">
-                <div class="bathroom-option">Yes</div>
+                <div class="bathroom-option">True</div>
                 <div class="bathroom-option">Fairly</div>
-                <div class="bathroom-option">No</div>  
+                <div class="bathroom-option">False</div>  
             </div>
+        </div>
+        
+        <div class="filter-section"></div>
+            <h3 class="filter-section-title">Rating</h3>
+            <div class="rating-container">
+            <div class="rating-inputs">
+              <input type="number" id="minRating" placeholder="Min rating" min="1" max="5" step="0.1" oninput="updateRating()">
+              <input type="number" id="maxRating" placeholder="Max rating" min="1" max="5" step="0.1" oninput="updateRating()">
+            </div>
+            <div id="result"></div>
         </div>
 
         
-
-        <div class="filter-dropdown-actions">
-            <button class="btn" id="cancel-btn">Cancel</button>
-            <button class="btn btn-primary" id="apply-btn">Apply Filters</button>
+        <div class="filter-section"></div>
+            <h3 class="filter-section-title">Rating</h3>
+            <div class="date-container">
+                <h3>Set Availability Period</h3>
+                <div class="date-inputs">
+                  <div>
+                    <label for="startDate">From:</label>
+                    <input type="date" id="startDate" onchange="updateAvailability()">
+                  </div>
+                  <div>
+                    <label for="endDate">To:</label>
+                    <input type="date" id="endDate" onchange="updateAvailability()">
+                  </div>
+                </div>
+                <div id="availability"></div>
+              </div>
         </div>
     </div>
 

@@ -152,7 +152,7 @@ app.post('/api/users/login', async (req, res) => {
 });
 
 // debug check for jwt token
-app.post("/api/users/login/verify", authentication.verifyToken, (req, res) => { 
+app.get("/api/users/login/verify", authentication.verifyToken, (req, res) => { 
   res.json({ success: true }); 
 });
 

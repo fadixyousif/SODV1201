@@ -152,17 +152,17 @@ app.post('/api/users/login', async (req, res) => {
 });
 
 // debug check for jwt token
-app.get("/api/users/login/verify", authentication.verifyToken, (req, res) => { 
+app.post("/api/users/login/verify", authentication.verifyToken, (req, res) => { 
   res.json({ success: true }); 
 });
 
 // GET request to get user profile
-app.get('/api/user/profile', authentication.verifyToken, async (req, res) => {
+app.get('/api/user/profile/:profileID', authentication.verifyToken, async (req, res) => {
   // get the profileID from the request body
-  const { profileID } = req.body;
+  const { profileID } = req.params;
 
   // check if the profileID is provided
-  if (!profileID || typeof profileID !== 'number') {
+  if (!profileID || isNaN(Number(profileID))) {
     return res.status(400).send({ message: 'Profile ID is required', success: false });
   }
 
@@ -327,7 +327,7 @@ app.put('/api/user/profile', authentication.verifyToken, async (req, res) => {
 });
 
 // GET request to search for properties
-app.get('/api/search', authentication.verifyToken, async (req, res) => {
+app.post('/api/search', authentication.verifyToken, async (req, res) => {
   // get the search filters from the request body
   const {
     address,
@@ -669,11 +669,11 @@ app.delete('/api/management/properties/property', authentication.verifyToken, as
 
 // workspace Management Endpoints
 // GET request to get a single workspace by ID
-app.get('/api/workspaces/workspace', authentication.verifyToken, async (req, res) => {
-  const { workspaceID } = req.body;
+app.get('/api/workspaces/workspace/:workspaceID', authentication.verifyToken, async (req, res) => {
+  const { workspaceID } = req.params;
 
   // check if the workspaceID is provided
-  if (!workspaceID) {
+  if (!workspaceID || isNaN(Number(workspaceID))) {
     return res.status(400).send({ message: 'Workspace ID is required', success: false });
   }
 

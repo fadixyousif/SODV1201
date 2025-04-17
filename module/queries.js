@@ -270,6 +270,12 @@ function buildWorkspaceSearchQuery(propertyID, filters = {}) {
   const whereClauses = ['w.delisted = 0', 'w.propertyID = ?'];
   const values = [propertyID];
 
+  // workspaceName
+  if (filters.workspaceName != null && filters.workspaceName.trim() !== '') {
+    whereClauses.push('w.name LIKE ?');
+    values.push(`%${filters.workspaceName.trim()}%`);
+  }
+
   // where varaibble checking if the where clauses are not empty and is a number then add to the where clauses
   if (filters.capacity != null && !isNaN(filters.capacity)) {
     whereClauses.push('w.capacity >= ?');
@@ -304,6 +310,12 @@ function buildWorkspaceSearchQuery(propertyID, filters = {}) {
   if (filters.smoking != null && (typeof filters.smoking) === 'boolean') {
     whereClauses.push('w.smoking = ?');
     values.push(filters.smoking);
+  }
+
+  // type 
+  if(filters.type != null && filters.type.trim() !== '') {
+    whereClauses.push('w.type = ?');
+    values.push(filters.type.trim());
   }
 
   // where varaibble checking if the where clauses are not empty and add to the where clauses

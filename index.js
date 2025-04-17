@@ -345,6 +345,7 @@ app.post('/api/search', authentication.verifyToken, async (req, res) => {
   } = req.body;
   
   const {
+    workspaceName,
     capacity,
     term,
     min_price,
@@ -352,7 +353,8 @@ app.post('/api/search', authentication.verifyToken, async (req, res) => {
     min_rating,
     max_rating,
     smoking,
-    avalability
+    avalability,
+    type
   } = workspace;
   
 
@@ -417,6 +419,7 @@ app.post('/api/search', authentication.verifyToken, async (req, res) => {
 		for (const property of properties) {
       // make a filter object to filter the workspaces based on the provided values
 			const workspaceFilters = {
+        workspaceName,
 				capacity,
 				term,
 				min_price,
@@ -424,7 +427,8 @@ app.post('/api/search', authentication.verifyToken, async (req, res) => {
         min_rating,
         max_rating,
         smoking,
-        avalability
+        avalability,
+        type
 			};
       
       // get the SQL query and values to search for workspaces from the database using the connection pool and provided values

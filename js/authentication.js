@@ -56,7 +56,7 @@ async function loginUser(userData) {
             showNotification('success', 'Login Successful', result.message || 'Welcome!');
             
             // Store the token in localStorage for future authenticated requests
-            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('auth-token', result.token);
 
             // Redirect to the dashboard or another page
             window.location.href = 'management.html';

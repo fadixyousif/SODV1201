@@ -22,7 +22,7 @@ $(async function(){
               <li class="user-menu">
                   <a href="#" id="user-name" class="user-menu-toggle">${name} ▼</a>
                   <ul class="user-menu-dropdown">
-                      <li><a href="/profile.html">Edit Profile</a></li>
+                      <li><a href="/edit_profile.html">Edit Profile</a></li>
                       ${role === 'owner' ? '<li><a href="/management.html">Manage Properties</a></li>' : ''}
                       <li><a href="#" id="logout-btn">Logout</a></li>
                   </ul>

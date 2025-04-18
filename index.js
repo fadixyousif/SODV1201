@@ -152,8 +152,30 @@ app.post('/api/users/login', async (req, res) => {
 });
 
 // debug check for jwt token
-app.get("/api/users/login/verify", authentication.verifyToken, (req, res) => { 
-  res.json({ success: true }); 
+app.get("/api/users/login/verify", authentication.verifyToken, async (req, res) => { 
+
+  // get the user from the provided email by jwt token
+  const user = await queries.getUserByEmail(req.tokenEmail.email);
+
+  if (user) {
+    // check if the user is not an owner then return a 403 error
+    if (user.role !== 'owner' && user.role !== 'coworker') {
+      return res.status(401).send({ message: 'Unauthorized', success: false });
+    }
+  } else if(user === false){
+    return res.status(403).send({ message: 'User not found', success: false });
+  }
+  else {
+    return res.status(400).send({ code: 1, message: 'Internal server error', success: false });
+  }
+
+  // send a success message if the user is found
+  res.send({
+    name: user.fullname,
+    role: user.role,
+    message: '',
+    success: true,
+  })
 });
 
 // GET request to get user profile

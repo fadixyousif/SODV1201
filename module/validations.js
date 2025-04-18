@@ -15,7 +15,7 @@ function isRegisterationValid(user) {
   const { fullname, username, password, email, phone, role } = user;
 
   // check fullname length is between 4 and 20 characters
-  if (fullname.length < 4 || fullname.length > 20) {
+  if (fullname.length < 4 || fullname.length > 100) {
 
     return { message: 'Full name must be between 4 and 20 characters', success: false }
 

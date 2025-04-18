@@ -73,7 +73,7 @@ label, select, input, textarea {
 
 
 
-.post {
+.post-listing {
     background: green;
     color: white;
     padding: 10px;
@@ -81,6 +81,11 @@ label, select, input, textarea {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.postal-neighbourhood {
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 .listing-container {
@@ -97,6 +102,7 @@ label, select, input, textarea {
     overflow: visible;
     box-sizing: border-box;
     margin: 0 auto;
+    visibility: visible;
 }
 
 .listing-item {
@@ -209,6 +215,41 @@ label, select, input, textarea {
     font-weight: bold;
 }
 
+.location {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.checkbox {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    width: 15%;
+}
+
+.extra {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    /* width: 15%; */
+}
+
+.seat-availability {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+
+.save-draft {
+    margin-bottom: 20px;
+    border: solid 1px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
 .listing-item .dropdown-content .edit-field input,
 .listing-item .dropdown-content .edit-field textarea {
     flex-grow: 1;
@@ -291,4 +332,3 @@ label, select, input, textarea {
     background-color: white; /* Background color for options */
     color: black; /* Text color for options */
 }
-

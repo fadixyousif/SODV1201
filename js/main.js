@@ -1,70 +1,38 @@
-const itemsData = [
-    {
-      "image": "./images/meeting-room.jpg",
-      "alt": "Meeting Room",
-      "location": "New York",
-      "rating": 4.5,
-      "distance": "2 miles",
-      "date": "Available Now",
-      "price": 200,
-      "description": "A spacious meeting room equipped with modern amenities.",
-      "category": "Office Room"
-    },
-    {
-      "image": "./images/desk.jpg",
-      "alt": "Desk",
-      "location": "Los Angeles",
-      "rating": 3.0,
-      "distance": "5 miles",
-      "date": "Available Tomorrow",
-      "price": 50,
-      "description": "A comfortable desk suitable for individual work.",
-      "category": "Office Room"
-    },
-    {
-      "image": "./images/office.jpg",
-      "alt": "Office",
-      "location": "Chicago",
-      "rating": 5.0,
-      "distance": "10 miles",
-      "date": "Available Next Week",
-      "price": 500,
-      "description": "A fully furnished office with a great view.",
-      "category": "Office Room"
-    },
-    {
-      "image": "./images/printer.jpg",
-      "alt": "Printer",
-      "location": "Miami",
-      "rating": 4.0,
-      "distance": "3 miles",
-      "date": "Available Now",
-      "price": 30,
-      "description": "A high-speed printer with multiple functions.",
-      "category": "Printers"
-    },
-    {
-      "image": "./images/copier.jpg",
-      "alt": "Copier",
-      "location": "Seattle",
-      "rating": 3.5,
-      "distance": "8 miles",
-      "date": "Available Tomorrow",
-      "price": 40,
-      "description": "A reliable copier for all your document needs.",
-      "category": "Copiers"
-    },
-    {
-      "image": "./images/stationery.jpg",
-      "alt": "Stationery",
-      "location": "San Francisco",
-      "rating": 4.5,
-      "distance": "1 mile",
-      "date": "Available Now",
-      "price": 10,
-      "description": "A variety of stationery items for office use.",
-      "category": "Stationeries"
-    }
-  ];
-
+$(async function(){
+        // Fetch user details
+        const response = await fetch('http://localhost:3300/api/users/login/verify', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
+          }
+      });
   
+      const user = await response.json();
+  
+      if (user.success) {
+          const { name, role } = user;
+  
+          // Update navigation bar
+          const navItems = $('#nav-items');
+          $('#auth-link').remove(); // Remove Login/Signup link
+  
+          // Add user menu
+          navItems.append(`
+              <li class="user-menu">
+                  <a href="#" id="user-name" class="user-menu-toggle">${name} ▼</a>
+                  <ul class="user-menu-dropdown">
+                      <li><a href="/profile.html">Edit Profile</a></li>
+                      ${role === 'owner' ? '<li><a href="/management.html">Manage Properties</a></li>' : ''}
+                      <li><a href="#" id="logout-btn">Logout</a></li>
+                  </ul>
+              </li>
+          `);
+  
+          // Logout functionality
+          $('#logout-btn').on('click', function () {
+              localStorage.removeItem('auth-token');
+              window.location.replace('/authentication.html');
+          });
+      }
+})

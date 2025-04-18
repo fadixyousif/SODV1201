@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authentication</title>
     <script src="./js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.min.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/config.js"></script>
     <script src="./js/authentication.js"></script>
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/authentication.css">
@@ -42,15 +45,15 @@
           <h2>Sign Up</h2>
           <form>
 
-            <select id="cars">
-            <option value="volvo" disabled selected>Choose a role:</option>
+            <select id="signup-role" required>
+            <option disabled selected>Choose a role:</option>
             <option value="owner">Owner</option>
             <option value="coworker">Coworker</option>
             </select>
-            <input type="text" id="signup-Full Name" placeholder="Full Name" required>
+            <input type="text" id="signup-fullname" placeholder="Full Name" required>
             <input type="text" id="signup-username" placeholder="Username" required>
             <input type="email" id="signup-email" placeholder="Email" required>
-            <input type="text" id="signup-Phone Number" placeholder="Phone Number" required>
+            <input type="text" id="signup-phone" placeholder="Phone Number" required>
             <input type="password" id="signup-password" placeholder="Password" required>
             <button type="submit">Sign Up</button>
           </form>

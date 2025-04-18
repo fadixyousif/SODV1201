@@ -61,7 +61,7 @@ body {
   border-radius: 5px;
 }
 
-.categories {
+.worskspaces {
   flex: 1; /* This makes it take up available space between header and footer */
   display: flex;
   align-items: center; /* Vertical centering */
@@ -71,15 +71,7 @@ body {
   max-width: 1200px;
 }
 
-.categories > .category-content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
-  gap: 100px;
-}
-
-.categories > .category-content > .category-info {
+.worskspaces > .workspace-info {
   align-items: center;
   justify-content: center;
   background: #ffffff;
@@ -98,7 +90,7 @@ body {
   transition: transform 0.3s ease-in-out;
 }
 
-.categories > .category-content > .category-info > .category-data {
+.worskspaces > .workspace-info > .workspace-data {
   display: flex;
   flex-direction: row; /* Keep items in a row */
   align-items: center;
@@ -106,12 +98,12 @@ body {
   gap: 30px;
 }
 
-.categories > .category-content > .category-info > .category-data > .category-lists {
+.worskspaces > .workspace-info > .workspace-data > .workspace-lists {
   flex: 1; /* Allow items to grow equally */
   max-width: 45%;
 }
 
-.categories > .category-content > .category-info > .category-data > .category-lists > img {
+.worskspaces > .workspace-info > .workspace-data > .workspace-lists > img {
   width: 128px;   
   height: 128px;
   /* width: 100%; Make image responsive */
@@ -120,7 +112,7 @@ body {
   max-height: 350px;
 }
 
-.categories > .category-content > .category-info > .button-container {
+.worskspaces > .workspace-info > .button-container {
   display: flex;
   flex-direction: column; /* Stack items vertically */
   align-items: center;
@@ -129,7 +121,7 @@ body {
   margin-top: 20px;
 }
 
-.categories > .category-content > .category-info > .button-container > a {
+.worskspaces > .workspace-info > .button-container > a {
   background: #04AA6D;
   color: white;
   padding: 14px 20px;
@@ -144,7 +136,7 @@ body {
   transition: background 0.3s, box-shadow 0.3s;
 }
 
-.categories > .category-content > .category-info > .button-container > a:hover {
+.worskspaces > .workspace-info > .button-container > a:hover {
   background: #037d50;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
@@ -242,13 +234,13 @@ body {
 @media (max-width: 1135px) {
   /* center the categories */
 
-  .categories > .category-content {
+  .worskspaces > .workspace-content {
     display: flex;
     flex-direction: column;
     align-items: center;
   }
 
-  .categories > .category-content > .category-info {
+  .worskspaces > .workspace-info {
     flex: none; /* Prevent stretching */
     width: 80%; /* Adjust width to fit */
     max-width: 600px; /* Prevent oversizing */
@@ -258,18 +250,18 @@ body {
 /* Responsive adjustments - only apply on very small screens */
 @media (max-width: 600px) {
 
-  .categories > .category-content > .category-info {
+  .worskspaces > .workspace-info {
     flex: 1 1 100%; /* Make it full width on small screens */
     min-width: auto; /* Allow it to shrink */
     font-size: 16px; /* Adjust font size */
     margin-left: auto;
     margin-right: auto;
   }
-  .categories > .category-content > .category-info > .category-data {
+  .worskspaces > .workspace-info > .workspace-data {
       flex-direction: column;
   }
   
-  .categories > .category-content > .category-info > .category-data > .category-lists {
+  .worskspaces > .workspace-info > .workspace-data > .workspace-lists {
       max-width: 90%;
   }
   
@@ -298,11 +290,11 @@ body {
   
 }
 
-.categories > .category-content > .category-info > h1, h3, h4, p {
+.worskspaces > .workspace-info > h1, h3, h4, p {
   text-align: center;
 }
 
-/* .categories > .category-content > .category-image {
+/* .worskspaces > .workspace-content > .workspace-image {
   display: flex;
   justify-content: center;
   align-items: center;

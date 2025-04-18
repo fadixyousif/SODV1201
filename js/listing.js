@@ -1,200 +1,403 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Elements
-  const filterToggle = document.getElementById('filter-toggle');
-  const filterDropdown = document.getElementById('filter-dropdown');
-  const overlay = document.getElementById('overlay');
-  const closeBtn = document.getElementById('close-btn');
-  const cancelBtn = document.getElementById('cancel-btn');
-  const applyBtn = document.getElementById('apply-btn');
-  
-  // Active filters counter
-  let activeFilters = 1; // Start with 1 active filter as shown in the design
+$(document).ready(async function () {
+    // Fetch user details
+    const response = await fetch('http://localhost:3300/api/users/login/verify', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
+        }
+    });
 
-  // Toggle filter dropdown
-  filterToggle.addEventListener('click', function() {
-      filterDropdown.classList.toggle('show');
-      overlay.classList.toggle('show');
-  });
-
-  // Close dropdown when clicking outside
-  overlay.addEventListener('click', function() {
-      filterDropdown.classList.remove('show');
-      overlay.classList.remove('show');
-  });
-
-  // Close dropdown with cancel button
-  cancelBtn.addEventListener('click', function() {
-      filterDropdown.classList.remove('show');
-      overlay.classList.remove('show');
-  });
-
-  // Apply filters and close dropdown
-  applyBtn.addEventListener('click', function() {
-      filterDropdown.classList.remove('show');
-      overlay.classList.remove('show');
-      // Here you would typically update your search results based on filters
-  });
-
-  // Close button for the entire filter panel
-  closeBtn.addEventListener('click', function() {
-      // This would typically close the entire filter UI
-      alert('Filter panel closed');
-  });
-
-  // Property type selection
-  const propertyTypes = document.querySelectorAll('.property-type');
-
-  propertyTypes.forEach(type => {
-      type.addEventListener('click', function() {
-          if (this.classList.contains('active')) {
-              this.classList.remove('active');
-              activeFilters--;
-          } else {
-              this.classList.add('active');
-              activeFilters++;
-          }
-          updateFilterBadge();
-      });
-  });
-
-  // Bedroom and bathroom selection
-  const bedroomOptions = document.querySelectorAll('.bedroom-option');
-  const bathroomOptions = document.querySelectorAll('.bathroom-option');
-
-  bedroomOptions.forEach(option => {
-      option.addEventListener('click', function() {
-          if (this.classList.contains('active')) {
-              this.classList.remove('active');
-              activeFilters--;
-          } else {
-              this.classList.add('active');
-              activeFilters++;
-          }
-          updateFilterBadge();
-      });
-  });
-
-  bathroomOptions.forEach(option => {
-      option.addEventListener('click', function() {
-          if (this.classList.contains('active')) {
-              this.classList.remove('active');
-              activeFilters--;
-          } else {
-              this.classList.add('active');
-              activeFilters++;
-          }
-          updateFilterBadge();
-      });
-  });
-
-  // Price range slider
-  const minSlider = document.getElementById('min-slider');
-  const maxSlider = document.getElementById('max-slider');
-  const minPrice = document.getElementById('min-price');
-  const maxPrice = document.getElementById('max-price');
-  const sliderTrack = document.querySelector('.slider-track');
-
-  function updateSliderTrack() {
-      const min = parseInt(minSlider.value);
-      const max = parseInt(maxSlider.value);
-      const percent1 = (min / parseInt(minSlider.max)) * 100;
-      const percent2 = (max / parseInt(maxSlider.max)) * 100;
-      sliderTrack.style.left = percent1 + '%';
-      sliderTrack.style.width = (percent2 - percent1) + '%';
-  }
-
-  function updateMinPrice() {
-      minPrice.value = minSlider.value;
-      updateSliderTrack();
-  }
-
-  function updateMaxPrice() {
-      maxPrice.value = maxSlider.value === maxSlider.max ? 'Max' : maxSlider.value;
-      updateSliderTrack();
-  }
-
-  minSlider.addEventListener('input', updateMinPrice);
-  maxSlider.addEventListener('input', updateMaxPrice);
-
-  minPrice.addEventListener('change', function() {
-      minSlider.value = this.value || 0;
-      updateSliderTrack();
-  });
-
-  maxPrice.addEventListener('change', function() {
-      maxSlider.value = this.value === 'Max' ? maxSlider.max : (this.value || maxSlider.max);
-      updateSliderTrack();
-  });
-
-  updateSliderTrack();
-
-  // Update filter badge count
-  function updateFilterBadge() {
-      const badge = document.querySelector('.btn-primary .badge');
-      badge.textContent = activeFilters;
-      badge.style.display = activeFilters > 0 ? 'flex' : 'none';
-  }
-
-  // Save search action
-  const saveButton = document.querySelector('.btn:nth-child(2)');
-  saveButton.addEventListener('click', function() {
-      alert('Search saved!');
-  });
-});
-
-function searchLocation() {
-    const address = document.getElementById('address').value;
-    const country = document.getElementById('country').value;
-    const result = document.getElementById('result');
-    
-    if (address && country) {
-      result.style.display = 'block';
-      result.innerHTML = `Searching for: ${address}, ${country}`;
-    } else {
-      alert('Please enter both address and country');
-    }
-  }
-
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('startDate').min = today;
-  document.getElementById('endDate').min = today;
-
-  function updateAvailability() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    const availabilityDiv = document.getElementById('availability');
-    
-    if (startDate && endDate) {
-      if (new Date(endDate) < new Date(startDate)) {
-        availabilityDiv.style.display = 'block';
-        availabilityDiv.innerHTML = 'Error: End date must be after start date';
-        availabilityDiv.style.color = 'red';
+    if (response.status === 401) {
+        setTimeout(() => {
+            window.location.replace('/authentication.html');
+        }, 1000);
         return;
-      }
-      
-      const formattedStartDate = new Date(startDate).toLocaleDateString('en-US', {
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric'
-      });
-      const formattedEndDate = new Date(endDate).toLocaleDateString('en-US', {
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric'
-      });
-      
-      availabilityDiv.style.display = 'block';
-      availabilityDiv.innerHTML = `Available from ${formattedStartDate} to ${formattedEndDate}`;
-      availabilityDiv.style.color = 'green';
-    } else if (startDate) {
-      availabilityDiv.style.display = 'block';
-      availabilityDiv.innerHTML = 'Please select an end date';
-      availabilityDiv.style.color = 'blue';
-    } else if (endDate) {
-      availabilityDiv.style.display = 'block';
-      availabilityDiv.innerHTML = 'Please select a start date';
-      availabilityDiv.style.color = 'blue';
-    } else {
-      availabilityDiv.style.display = 'none';
     }
-  }
+
+    const user = await response.json();
+
+    if (user.success) {
+        const { name, role } = user;
+
+        // Update navigation bar
+        const navItems = $('#nav-items');
+        $('#auth-link').remove(); // Remove Login/Signup link
+
+        // Add user menu
+        navItems.append(`
+            <li class="user-menu">
+                <a href="#" id="user-name" class="user-menu-toggle">${name} ▼</a>
+                <ul class="user-menu-dropdown">
+                    <li><a href="/profile.html">Edit Profile</a></li>
+                    ${role === 'owner' ? '<li><a href="/management.html">Manage Properties</a></li>' : ''}
+                    <li><a href="#" id="logout-btn">Logout</a></li>
+                </ul>
+            </li>
+        `);
+
+        // Logout functionality
+        $('#logout-btn').on('click', function () {
+            localStorage.removeItem('auth-token');
+            window.location.replace('/authentication.html');
+        });
+    }
+
+    const defaultFilters = {
+        address: null,
+        address2: null,
+        province: null,
+        city: null,
+        country: null,
+        postal: null,
+        neighbourhood: null,
+        min_sqft: null,
+        max_sqft: null,
+        garage: null,
+        transport: null,
+        workspace: {
+            capacity: null,
+            term: null,
+            min_price: null,
+            max_price: null,
+            min_rating: null,
+            max_rating: null,
+            smoking: null,
+            avalability: null
+        }
+    };
+
+    // Show popup
+    $('#filter-toggle').on('click', function () {
+        $('#filter-popup').addClass('show');
+        $('#popup-overlay').addClass('show');
+    });
+
+    // Close popup
+    function closePopup() {
+        $('#filter-popup').removeClass('show');
+        $('#popup-overlay').removeClass('show');
+    }
+
+    $('#close-popup-btn, #popup-overlay, #cancel-filters-btn').on('click', closePopup);
+
+    // Reset filters to default values
+    function resetFilters() {
+        // Clear all input fields
+        $('.inputt').val('').removeClass('active');
+        $('#min-sqft, #max-sqft, #min-price, #max-price, #minRating, #maxRating, #startDate, #endDate').val('');
+
+        // Remove active classes from province and city options
+        $('.province-option, .city-option').removeClass('active');
+
+        // Clear dynamically populated city grid
+        $('#city-grid').empty();
+
+        // Reset multi-choice options
+        $('.option-grid .option').removeClass('active');
+
+        // Reset workspace type options
+        $('.property-grid .property-type').removeClass('active');
+    }
+
+    // Close popup and reset filters when "Cancel" button is clicked
+    $('#cancel-filters-btn').on('click', function () {
+        resetFilters();
+        closePopup();
+    });
+
+    // Apply filters
+    $('#apply-filters-btn, #search-btn').on('click', function () {
+        const filters = collectFilters();
+        sendFiltersToAPI(filters);
+        closePopup();
+    });
+
+    // Add event listeners to province buttons (single-choice)
+    $('.province-option').on('click', function () {
+        const $this = $(this);
+
+        // Remove 'active' class from all province options
+        $('.province-option').removeClass('active');
+
+        // Add 'active' class to the clicked button
+        $this.addClass('active');
+    });
+
+    // Cities for each province/territory
+    const provinceCities = {
+        "Alberta": ["Calgary", "Edmonton", "Red Deer"],
+        "British Columbia": ["Vancouver", "Victoria", "Kelowna"],
+        "Manitoba": ["Winnipeg", "Brandon", "Steinbach"],
+        "New Brunswick": ["Moncton", "Saint John", "Fredericton"],
+        "Nova Scotia": ["Halifax", "Sydney", "Truro"],
+        "Ontario": ["Toronto", "Ottawa", "Hamilton"],
+        "Prince Edward Island": ["Charlottetown", "Summerside"],
+        "Quebec": ["Montreal", "Quebec City", "Laval"],
+        "Saskatchewan": ["Saskatoon", "Regina", "Prince Albert"],
+        "Northwest Territories": ["Yellowknife", "Hay River", "Inuvik"],
+        "Nunavut": ["Iqaluit", "Rankin Inlet", "Cambridge Bay"],
+        "Yukon": ["Whitehorse", "Dawson City", "Watson Lake"]
+    };
+
+    // Add event listener to province options
+    $('.province-option').on('click', function () {
+        const selectedProvince = $(this).data('province');
+        const $cityGrid = $('#city-grid');
+
+        // Remove 'active' class from all province options
+        $('.province-option').removeClass('active');
+
+        // Add 'active' class to the clicked button
+        $(this).addClass('active');
+
+        // Populate cities based on the selected province/territory
+        $cityGrid.empty();
+        if (provinceCities[selectedProvince]) {
+            provinceCities[selectedProvince].forEach(city => {
+                $cityGrid.append(`<div class="city-option" data-city="${city}">${city}</div>`);
+            });
+        }
+
+        // Add event listener to city buttons
+        $('.city-option').on('click', function () {
+            // Remove 'active' class from all city options
+            $('.city-option').removeClass('active');
+
+            // Add 'active' class to the clicked button
+            $(this).addClass('active');
+        });
+    });
+
+    // Add event listeners to option buttons (multi-choice for Garage, Smoking, etc.)
+    $('.option-grid .option').on('click', function () {
+        const $this = $(this);
+
+        // Toggle 'active' class on the clicked button
+        if ($this.hasClass('active')) {
+            $this.removeClass('active');
+        } else {
+            $this.addClass('active');
+        }
+    });
+
+    // Add event listeners to option buttons (single-choice for Garage, Smoking, etc.)
+    $('.option-grid').each(function () {
+        const $options = $(this).find('.option');
+
+        $options.on('click', function () {
+            const $this = $(this);
+
+            // Remove 'active' class from all options in the same group
+            $options.removeClass('active');
+
+            // Add 'active' class to the clicked button
+            $this.addClass('active');
+        });
+    });
+
+    // Add event listeners to "Type of Workspace" buttons (single-choice)
+    $('.property-grid .property-type').on('click', function () {
+        const $this = $(this);
+
+        // Remove 'active' class from all workspace type options
+        $('.property-grid .property-type').removeClass('active');
+
+        // Add 'active' class to the clicked button
+        $this.addClass('active');
+    });
+
+    // Add event listeners to input fields
+    $('.inputt, #min-price, #max-price, #minRating, #maxRating, #startDate, #endDate').on('change', function () {
+        const $this = $(this);
+        if ($this.val().trim() !== '') {
+            $this.addClass('active');
+        } else {
+            $this.removeClass('active');
+        }
+    });
+
+    // Generate workspaces on page load
+    sendFiltersToAPI(defaultFilters);
+
+    // Collect filter values
+    function collectFilters() {
+        const filters = {
+            address: sanitizeInput($('#address').val()),
+            address2: sanitizeInput($('#address2').val()),
+            province: getActiveOptionValue('.province-grid .province-option'),
+            city: getActiveOptionValue('#city-grid .city-option'),
+            country: sanitizeInput($('#country').val()),
+            postal: sanitizeInput($('#Postal').val()),
+            neighbourhood: sanitizeInput($('#Neighbourhood').val()),
+            min_sqft: sanitizeInput($('#min-sqft').val(), true),
+            max_sqft: sanitizeInput($('#max-sqft').val(), true),
+            garage: getActiveOptionValue('.filter-section:nth-of-type(12) .option'),
+            transport: getActiveOptionValue('.filter-section:nth-of-type(13) .option'),
+            workspace: {
+                workspaceName: sanitizeInput($('.search-box').val()),
+                type: getActiveOptionValue('.property-grid .property-type'),
+                capacity: getActiveOptionValue('.filter-section:nth-of-type(11) .option'),
+                term: getActiveOptionValue('.filter-section:nth-of-type(18) .option'),
+                min_price: sanitizeInput($('#min-price').val(), true),
+                max_price: sanitizeInput($('#max-price').val(), true),
+                min_rating: sanitizeInput($('#minRating').val(), true),
+                max_rating: sanitizeInput($('#maxRating').val(), true),
+                smoking: getActiveOptionValue('.filter-section:nth-of-type(14) .option'),
+                avalability: sanitizeInput($('#startDate').val())
+            },
+            sort: $('#sort-options').val() // Add sorting option
+        };
+        return filters;
+    }
+
+    // Helper function to sanitize input
+    function sanitizeInput(value, isNumber = false) {
+        if (value === undefined || value === null || value.trim() === '') {
+            return null;
+        }
+        return isNumber ? parseFloat(value) || null : value.trim();
+    }
+
+    // Get the value of the active option
+    function getActiveOptionValue(selector) {
+        const $activeOption = $(`${selector}.active`);
+        return $activeOption.length ? $activeOption.text().trim() : null;
+    }
+
+    // Send filters to API
+    function sendFiltersToAPI(filters) {
+        const $itemGrid = $('.item-grid');
+
+        // Show "Please wait" message
+        $itemGrid.html('<p class="loading-message">Please wait, loading workspaces...</p>');
+
+        fetch(`${api_url}/api/search`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
+            },
+            body: JSON.stringify(filters)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayResults(data.results);
+        })
+        .catch(error => {
+            console.error('Error fetching filtered data:', error);
+            $itemGrid.html('<p class="error-message">An error occurred while loading workspaces. Please try again later.</p>');
+        });
+    }
+
+    // Sort results based on selected option
+    function sortResults(results, sortOption) {
+        switch (sortOption) {
+            case 'price-asc':
+                return results.sort((a, b) => {
+                    const priceA = a.workspaces[0]?.price || Infinity;
+                    const priceB = b.workspaces[0]?.price || Infinity;
+                    return priceA - priceB;
+                });
+            case 'price-desc':
+                return results.sort((a, b) => {
+                    const priceA = a.workspaces[0]?.price || -Infinity;
+                    const priceB = b.workspaces[0]?.price || -Infinity;
+                    return priceB - priceA;
+                });
+            case 'rating-desc':
+                return results.sort((a, b) => {
+                    const ratingA = parseFloat(a.workspaces[0]?.rating || 0);
+                    const ratingB = parseFloat(b.workspaces[0]?.rating || 0);
+                    return ratingB - ratingA;
+                });
+            case 'availability-asc':
+                return results.sort((a, b) => {
+                    const dateA = new Date(a.workspaces[0]?.availability_date || Infinity);
+                    const dateB = new Date(b.workspaces[0]?.availability_date || Infinity);
+                    return dateA - dateB;
+                });
+            default:
+                return results;
+        }
+    }
+
+    // Display results
+    function displayResults(results) {
+        const $itemGrid = $('.item-grid');
+        $itemGrid.empty(); // Clear existing items
+
+        const sortOption = $('#sort-options').val();
+        const sortedResults = sortResults(results, sortOption);
+
+        if (sortedResults && sortedResults.length > 0) {
+            sortedResults.forEach(property => {
+                property.workspaces.forEach(workspace => {
+                    const itemHTML = `
+                        <div class="item">
+                            <div class="item-picture">
+                                <img src="${String.fromCharCode(...workspace.image.data)}" alt="${workspace.name}">
+                            </div>
+                            <div class="item-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Name:</span>
+                                    <span class="detail-value">${workspace.name}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Type:</span>
+                                    <span class="detail-value">${workspace.type}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Address:</span>
+                                    <span class="detail-value">${property.address}, ${property.city}, ${property.province}, ${property.country}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Neighborhood:</span>
+                                    <span class="detail-value">${property.neighbourhood}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Price:</span>
+                                    <span class="detail-value">$${workspace.price} / ${workspace.term}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Seat Capacity:</span>
+                                    <span class="detail-value">${workspace.capacity}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Smoking Allowed:</span>
+                                    <span class="detail-value">${workspace.smoking_allowed ? "Yes" : "No"}</span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">Garage Available:</span>
+                                    <span class="detail-value">${property.garage ? "Yes" : "No"}</span>
+                                </div>
+
+                                <div class="detail-row">
+                                    <span class="detail-label">Availability:</span>
+                                    <span class="detail-value">${new Date(workspace.availability_date).toLocaleDateString()}</span>
+                                </div>
+                                <div class="detail-row detail-rating">
+                                    <span class="stars">${"★".repeat(Math.floor(workspace.rating))}${workspace.rating % 1 ? "☆" : ""}</span>
+                                    <span class="rating-value">(${workspace.rating})</span>
+                                </div>
+                            </div>
+                            <div class="item-footer">
+                                <a href="/workspace.html?id=${workspace.workspaceID}" class="redirect-link">View Workspace</a>
+                            </div>
+                        </div>
+                    `;
+                    $itemGrid.append(itemHTML);
+                });
+
+            });
+        } else {
+            $itemGrid.html('<p class="error-message">No results found.</p>');
+        }
+    }
+});

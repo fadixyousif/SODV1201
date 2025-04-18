@@ -359,3 +359,47 @@ body {
 .footer-content > footer > .social-icons > button > i {
   font-size: 1.2em;
 }
+
+/* User Menu CSS */
+
+.user-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.user-menu-toggle {
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+}
+
+.user-menu-dropdown {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 150px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  list-style: none;
+  padding: 10px 0;
+  margin: 0;
+  border-radius: 4px;
+}
+
+.user-menu-dropdown li {
+  padding: 10px 20px;
+}
+
+.user-menu-dropdown li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+}
+
+.user-menu-dropdown li a:hover {
+  background-color: #f0f0f0;
+}
+
+.user-menu:hover .user-menu-dropdown {
+  display: block;
+}

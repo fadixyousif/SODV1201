@@ -6,192 +6,252 @@
     <title>Listing</title>
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/main.js" defer></script>
+    <script src="./js/config.js"></script>
     <script src="./js/listing.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/listing.css">
 </head>
 <body>
 
+    <ul class="nav">
+        <span class="company-name"><a href="#">RentableBnB</a></span>
+        <div class="navigation" id="nav-items">
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="#">Listing</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li id="auth-link"><a href="authentication.html" class="active">Login/Signup</a></li>
+        </div>
+    </ul>
+
     <div class="search-container">
-        <div class="search-bar">
-            <input type="text" placeholder="Search">
-            <div class="dropdown">
-             </div>   
-        </div>        
-    </div>            
-    <div class="filter-container">
-        <div class="filter-header">
-            <h2 class="filter-title">Filter Results</h2>
-            <div class="filter-actions">
-                <button class="btn btn-primary" id="filter-toggle">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1.5 4.5H14.5M4.5 8H11.5M6.5 11.5H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Filters
-                    <span class="badge">1</span>
-                </button>
-                <button class="btn">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 4V12M4 8H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Save Search
-                </button>
-                <button class="btn" id="close-btn">✕</button>
-            </div>
-        </div>
+        <div class="search-container">
+            <div class="search-bar">
+                <input class="search-box" type="text" placeholder="Search by workspace name">
+                <div class="filter-actions">
+                    <button class="btn btn-primary" id="search-btn">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11.5 11.5L14.5 14.5M7 12C9.76142 12 12 9.76142 12 7C12 4.23858 9.76142 2 7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-primary" id="filter-toggle">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.5 4.5H14.5M4.5 8H11.5M6.5 11.5H9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Filters
+                    </button>
+                </div>
+                <div class="filter-actions">
+                    <select id="sort-options" class="btn">
+                        <option value="">Sort By</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="rating-desc">Rating: High to Low</option>
+                        <option value="availability-asc">Availability: Soonest First</option>
+                    </select>
+                </div>
+            </div>        
+        </div>            
     </div>
 
-    <div class="filter-dropdown" id="filter-dropdown">
-
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Country</h3>
-            <div class="search-containerr">
-                <input class="inputt" type="text" id="country" placeholder="Enter country">
-                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
-                <div id="result" class="result"></div>
-             </div>
+    <div class="filter-popup" id="filter-popup">
+        <div class="filter-popup-header">
+            <h2>Filters</h2>
         </div>
+        <div class="filter-popup-body">
 
-        <div class="filter-section">
-            <h3 class="filter-section-title">Address</h3>
-            <div class="search-containerr">
-                <input class="inputt" type="text" id="address" placeholder="Enter address">
-                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
-                <div id="result" class="result"></div>
-             </div>
-        </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Postal</h3>
-            <div class="search-containerr">
-                <input class="inputt" type="text" id="Postal" placeholder="Post code">
-                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
-                <div id="result" class="result"></div>
-             </div>
-        </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Province</h3>
-            <div class="bathroom-grid">
-                <div class="bathroom-option">Alberta</div>
-                <div class="bathroom-option">British Columbia</div>
-                <div class="bathroom-option">Manitoba</div>
-                <div class="bathroom-option">New Brunswick</div>
-                <div class="bathroom-option">Nova scotia</div>
-                <div class="bathroom-option">Ontario</div>
-                <div class="bathroom-option">Prince Edwards Island</div>
-                <div class="bathroom-option">Quebec</div>
-                <div class="bathroom-option">Saskatchewan</div>
+            <!-- Neighbourhood Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Neighbourhood</h3>
+                <div class="search-containerr">
+                    <input class="inputt" type="text" id="Neighbourhood" placeholder="Neighbourhood">
+                    <div id="result" class="result"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="filter-section">
-            <h3 class="filter-section-title">Neighbourhood</h3>
-            <div class="search-containerr">
-                <input class="inputt" type="text" id="Neighbourhood" placeholder="Neighbourhood">
-                <!-- <button class=".buttonn" onclick="searchLocation()">Search</button> -->
-                <div id="result" class="result"></div>
-             </div>
-        </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Type of Workspace</h3>
-            <div class="property-grid">
-                <div class="property-type">Meeting Room</div>
-                <div class="property-type">Private Office</div>
-                <div class="property-type">Open desk</div>
+            <!-- Address Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Address</h3>
+                <div class="search-containerr">
+                    <input class="inputt" type="text" id="address" placeholder="Enter address">
+                    <div id="result" class="result"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="filter-section">
-            <h3 class="filter-section-title">Monthly Rent Range</h3>
-            <div class="rent-range">
-                <div class="price-inputs">
-                    <div class="price-input">
-                        <label for="min-price">$</label>
-                        <input type="text" id="min-price" placeholder="0" value="0">
+            <!-- Address2 Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Address 2</h3>
+                <div class="search-containerr">
+                    <input class="inputt" type="text" id="address2" placeholder="Enter address 2">
+                    <div id="result" class="result"></div>
+                </div>
+            </div>
+
+            <!-- Province Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Province/Territory</h3>
+                <div class="province-grid">
+                    <div class="province-option" data-province="Alberta">Alberta</div>
+                    <div class="province-option" data-province="British Columbia">British Columbia</div>
+                    <div class="province-option" data-province="Manitoba">Manitoba</div>
+                    <div class="province-option" data-province="New Brunswick">New Brunswick</div>
+                    <div class="province-option" data-province="Nova Scotia">Nova Scotia</div>
+                    <div class="province-option" data-province="Ontario">Ontario</div>
+                    <div class="province-option" data-province="Prince Edward Island">Prince Edward Island</div>
+                    <div class="province-option" data-province="Quebec">Quebec</div>
+                    <div class="province-option" data-province="Saskatchewan">Saskatchewan</div>
+                    <div class="province-option" data-province="Northwest Territories">Northwest Territories</div>
+                    <div class="province-option" data-province="Nunavut">Nunavut</div>
+                    <div class="province-option" data-province="Yukon">Yukon</div>
+                </div>
+            </div>
+
+            <!-- City Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">City</h3>
+                <div class="city-grid" id="city-grid">
+                    <!-- Cities will be dynamically added here -->
+                </div>
+            </div>
+
+
+            <!-- Country Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Country</h3>
+                <div class="search-containerr">
+                    <input class="inputt" type="text" id="country" placeholder="Enter country">
+                    <div id="result" class="result"></div>
+                </div>
+            </div>
+
+            <!-- Postal Code Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Postal</h3>
+                <div class="search-containerr">
+                    <input class="inputt" type="text" id="Postal" placeholder="Post code">
+                    <div id="result" class="result"></div>
+                </div>
+            </div>
+            
+            <!-- Type of Workspace Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Type of Workspace</h3>
+                <div class="property-grid">
+                    <div class="property-type">Meeting Room</div>
+                    <div class="property-type">Private Office</div>
+                    <div class="property-type">Open Desk</div>
+                </div>
+            </div>
+
+            <!-- Monthly Rent Range Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Monthly Rent Range</h3>
+                <div class="rent-range">
+                    <div class="price-inputs">
+                        <div class="price-input">
+                            <label for="min-price">$</label>
+                            <input type="text" id="min-price" placeholder="0" value="0">
+                        </div>
+                        <div class="price-divider">to</div>
+                        <div class="price-input">
+                            <label for="max-price">$</label>
+                            <input type="text" id="max-price" placeholder="Max" value="1000">
+                        </div>
                     </div>
-                    <div class="price-divider">to</div>
-                    <div class="price-input">
-                        <label for="max-price">$</label>
-                        <input type="text" id="max-price" placeholder="Max">
+                </div>
+            </div>
+
+            <!-- Capacity Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Capacity</h3>
+                <div class="option-grid">
+                    <div class="option">1</div>
+                    <div class="option">2</div>
+                    <div class="option">3</div>
+                    <div class="option">4</div>
+                    <div class="option">5</div>
+                </div>
+            </div>
+
+            <!-- Garage Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Garage</h3>
+                <div class="option-grid">
+                    <div class="option">Yes</div>
+                    <div class="option">No</div>
+                </div>
+            </div>
+
+            <!-- Smoking Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Smoking</h3>
+                <div class="option-grid">
+                    <div class="option">Yes</div>
+                    <div class="option">No</div>
+                </div>
+            </div>
+
+            <!-- Accessibility by Public Transport Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Accessibility by Public Transport</h3>
+                <div class="option-grid">
+                    <div class="option">Yes</div>
+                    <div class="option">No</div>
+                </div>
+            </div>
+
+            <!-- Rating Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Rating</h3>
+                <div class="rating-container">
+                    <div class="rating-inputs">
+                        <input type="number" id="minRating" placeholder="Min rating" min="1" max="5" step="0.1" oninput="updateRating()">
+                        <input type="number" id="maxRating" placeholder="Max rating" min="1" max="5" step="0.1" oninput="updateRating()">
                     </div>
                 </div>
-                <div class="slider-container">
-                    <div class="slider-track"></div>
-                    <input type="range" min="0" max="10000" value="2500" class="slider" id="min-slider">
-                    <input type="range" min="0" max="10000" value="7500" class="slider" id="max-slider">
+            </div>
+
+            <!-- Availability Period Filter -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Set Availability Period</h3>
+                <div class="date-container">
+                    <div class="date-inputs">
+                        <div>
+                            <label for="startDate">From:</label>
+                            <input type="date" id="startDate">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Min and Max Square Footage -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Square Footage</h3>
+                <div class="sqft-container">
+                    <input type="number" id="min-sqft" placeholder="Min Sqft">
+                    <input type="number" id="max-sqft" placeholder="Max Sqft">
+                </div>
+            </div>
+
+            <!-- Term Input -->
+            <div class="filter-section">
+                <h3 class="filter-section-title">Term</h3>
+                <div class="option-grid">
+                    <div class="option">Daily</div>
+                    <div class="option">Weekly</div>
+                    <div class="option">Monthly</div>
                 </div>
             </div>
         </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Capacity</h3>
-            <div class="bathroom-grid">
-                <div class="bathroom-option">1</div>
-                <div class="bathroom-option">2</div>
-                <div class="bathroom-option">3</div>
-                <div class="bathroom-option">4</div>
-                <div class="bathroom-option">5</div>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Garage</h3>
-            <div class="bathroom-grid">
-                <div class="bathroom-option">Yes</div>
-                <div class="bathroom-option">No</div>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Smoking</h3>
-            <div class="bathroom-grid">
-                <div class="bathroom-option">True</div>
-                <div class="bathroom-option">False</div>
-            </div>
-        </div>
-
-        <div class="filter-section">
-            <h3 class="filter-section-title">Acessibility by public transport</h3>
-            <div class="bathroom-grid">
-                <div class="bathroom-option">True</div>
-                <div class="bathroom-option">Fairly</div>
-                <div class="bathroom-option">False</div>  
-            </div>
-        </div>
-        
-        <div class="filter-section"></div>
-            <h3 class="filter-section-title">Rating</h3>
-            <div class="rating-container">
-            <div class="rating-inputs">
-              <input type="number" id="minRating" placeholder="Min rating" min="1" max="5" step="0.1" oninput="updateRating()">
-              <input type="number" id="maxRating" placeholder="Max rating" min="1" max="5" step="0.1" oninput="updateRating()">
-            </div>
-            <div id="result"></div>
-        </div>
-
-        
-        <div class="filter-section"></div>
-            <h3 class="filter-section-title">Rating</h3>
-            <div class="date-container">
-                <h3>Set Availability Period</h3>
-                <div class="date-inputs">
-                  <div>
-                    <label for="startDate">From:</label>
-                    <input type="date" id="startDate" onchange="updateAvailability()">
-                  </div>
-                  <div>
-                    <label for="endDate">To:</label>
-                    <input type="date" id="endDate" onchange="updateAvailability()">
-                  </div>
-                </div>
-                <div id="availability"></div>
-              </div>
+        <div class="filter-popup-footer">
+            <button class="btn btn-primary" id="apply-filters-btn">Apply</button>
+            <button class="btn" id="cancel-filters-btn">Cancel</button>
         </div>
     </div>
+    <div class="overlay" id="popup-overlay"></div>
 
     <div class="item-grid">
     
@@ -209,6 +269,5 @@
             </div>
         </footer>
       </div>
-    <script src="listing.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>Properity Management</title>
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/management.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="./css/main.css">
     <link rel="stylesheet" href="./css/management.css">
@@ -14,7 +15,8 @@
     <ul class="nav">
         <span class="company-name"><a href="#">RentableBnB</a></span>
         <div class="navigation">
-            <li><a href="/">Home</a></li>
+                        <li><a href="./index.html">Home</a></li>
+
             <li><a href="listing.html">Listing</a></li>
             <li><a href="contact.html">Contact</a></li>
             <li><a href="authentication.html">Logout</a></li>
@@ -24,62 +26,124 @@
     <div class="main">
         <div class="form">
             <div class="form-box">
-                <h2>Spaces</h2>
-                <label for="type-space">Type:</label>
-                <select id="type-space">
-                    <option>Office Room</option>
-                    <option>Kitchen Space</option>
-                    <option>Training Room</option>
-                </select>
+                <h2>Create a Property</h2>
+                
 
-                <label>Image:</label>
-                <div class="image-upload" id="drop-area-space">
-                    <p>Drag & drop image here or click to select</p>
-                    <input type="file" id="fileinput-space" accept="image/*"  hidden>
-                    <img id="preview-space" src="" alt="image preview" style="display: none;">
-                </div>
+                <label>Name:</label>
+                <input type="text">
 
                 <label>Description:</label>
-                <textarea id="description-space" placeholder="Write a description of the space here..."></textarea>
+                <textarea id="description" placeholder="Write a description here..."></textarea>
 
-                <label>Price:</label>
-                <input type="number" id="price-space" placeholder="$ per hour">
 
-                <label>Location:</label>
-                <input type="text" id="location-space" placeholder="Full address of the space.">
+                <label>Address:</label>
+                <input type="text">
 
-                <button class="post">Post Space</button>
+                <div class="location">
+                    <label>Province</label>
+                    <select>
+                       <option>Alberta</option>
+                    </select>
+
+                    <label>City</label>
+                    <select>
+                       <option selected="selected">Select</option>
+                    </select>
+                </div>
+
+                <div class="postal-neighbourhood">
+                    <input type="number" id="Post">
+                    <label>Postal Code</label>
+
+                    <label>Neighbourhood</label>
+                    <input type="text">
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="garage">
+                    <label for="garage">Garage</label>
+                </div>
+
+                <div class="extra">
+                    <select>
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                    <label>Public Access</label>
+
+                    <label>Sqft</label>
+                    <input type="number">
+                </div>
+
+                <button class="save-draft property-draft">Save Draft</button>
+
+                
+
+                <button class="post-listing">Create Listing</button>
             </div>
-
+            
             <div class="form-box">
-                <h2>Equipment</h2>
-
-                <label for="type-equipment">Type:</label>
-                <select id="type-equipment">
-                    <option>Printers</option>
-                    <option>Copiers</option>
-                    <option>Stationeries</option>
+                <h2>Create a Workspace</h2>
+                
+                <label for="type">Type:</label>
+                <select id="type">
+                    <optgroup label="Spaces">
+                        <option>Meeting Room</option>
+                        <option>Private Office</option>
+                        <option>Open Desk</option>
+                    </optgroup>
                 </select>
 
                 <label>Image:</label>
-                <div class="image-upload" id="drop-area-equipment">
+                <div class="image-upload" id="drop-area">
                     <p>Drag & drop image here or click to select</p>
-                    <input type="file" id="fileinput-equipment" accept="image/*" hidden>
-                    <img id="preview-equipment" src="" alt="image preview" style="display: none;">
+                    <input type="file" id="fileinput" accept="image/*" hidden>
+                    <img id="preview" src="" alt="image preview" style="display: none;">
                 </div>
 
                 <label>Description:</label>
-                <textarea id="description-equipment" placeholder="Write a description of the equipment here..."></textarea>
+                <textarea id="workspaceDescription" placeholder="Write a description here..."></textarea>
 
                 <label>Price:</label>
-                <input type="number" id="price-equipment" placeholder="$ per hour">
+                <input type="number" id="price" placeholder="$ per day">
 
-                <label>Location:</label>
-                <input type="text" id="location-equipment" placeholder="Full address of the equipment">
+                <label>Address:</label>
+                <Select id="workspaceAddress">
+                    <option>Select</option>
+                </Select>
 
-                <button class="post">Post Equipment</button>
+                <div class="checkbox">
+                    <input type="checkbox">
+                    <label>Smoking</label>
+                </div>
+
+                
+                <div class = "seat-availability">
+                    <label>Seat/Capacity</label>
+                    <input type="text" id="capacity" placeholder="Seat capacity">
+
+                    <label>Availability</label>
+                    <input type="date">
+                </div>
+
+                <label>Lease Term</label>
+                <select>
+                    <option>Days</option>
+                    <option>Weeks</option>
+                    <option>Months</option>
+                </select>
+
+                <button class="save-draft workspace-draft">Save Draft</button>
+
+               
+
+               
+
+                <button class="post-listing">Post Listing</button>
             </div>
         </div>
+
+
 
         <div><h2>Available Listings:</h2></div>
 

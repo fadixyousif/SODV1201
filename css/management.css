@@ -102,7 +102,10 @@ label, select, input, textarea {
     overflow: visible;
     box-sizing: border-box;
     margin: 0 auto;
+<<<<<<< HEAD
     visibility: visible;
+=======
+>>>>>>> ab2684eb95b3f170c77a6d807bc81c38a17072f4
 }
 
 .listing-item {
@@ -215,6 +218,7 @@ label, select, input, textarea {
     font-weight: bold;
 }
 
+<<<<<<< HEAD
 .location {
     display: flex;
     flex-direction: row-reverse;
@@ -250,6 +254,8 @@ label, select, input, textarea {
     transition: background-color 0.3s;
 }
 
+=======
+>>>>>>> ab2684eb95b3f170c77a6d807bc81c38a17072f4
 .listing-item .dropdown-content .edit-field input,
 .listing-item .dropdown-content .edit-field textarea {
     flex-grow: 1;
@@ -332,3 +338,7 @@ label, select, input, textarea {
     background-color: white; /* Background color for options */
     color: black; /* Text color for options */
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ab2684eb95b3f170c77a6d807bc81c38a17072f4

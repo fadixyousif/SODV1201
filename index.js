@@ -517,7 +517,7 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
 
 
   // check if all the required fields are provided
-  if (!name || !address || !address2 || !province || !city || !country || !postal || !neighbourhood || !sqft) {
+  if (!name || !address || !province || !city || !country || !postal || !neighbourhood || !sqft) {
     return res.status(400).send({ message: 'All fields are required', success: false });
   }
 
@@ -583,7 +583,7 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
 
 
   // check if all the required fields are provided
-  if (!propertyID || !name || !address || !address2 || !province || !city || !country || !postal || !neighbourhood || !sqft || !delisted === undefined) {
+  if (!propertyID || !name || !address || !province || !city || !country || !postal || !neighbourhood || !sqft || !delisted === undefined) {
     return res.status(400).send({ message: 'All fields are required', success: false });
   }
 

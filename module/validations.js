@@ -117,8 +117,10 @@ function isPropertyDataValid(property) {
     }
 
     // check if the address2 is not empty
-    if (address2.length < 4 || address2.length > 20) {
-        return { message: 'Address2 must be between 4 and 20 characters', success: false }
+    if (address2.length !== 0) {
+        if (address2.length < 4 || address2.length > 20) {
+            return { message: 'Address2 must be between 4 and 20 characters', success: false }
+        }
     }
 
     // check if the province is not empty

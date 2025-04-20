@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Properity Management</title>
     <script src="./js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.min.js"></script>
+    <script src="./js/config.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/management.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -12,59 +15,70 @@
     <link rel="stylesheet" href="./css/management.css">
 </head>
 <body>
-    <ul class="nav">
+    <ul class="nav" >
         <span class="company-name"><a href="#">RentableBnB</a></span>
-        <div class="navigation">
-                        <li><a href="./index.html">Home</a></li>
-
+        <div class="navigation" id="nav-items">
+            <li><a href="./index.html">Home</a></li>
             <li><a href="listing.html">Listing</a></li>
             <li><a href="contact.html">Contact</a></li>
-            <li><a href="authentication.html">Logout</a></li>
+            <li id="auth-link"><a href="authentication.html">Logout</a></li>
         </div>
     </ul>
 
     <div class="main">
         <div class="form">
-            <div class="form-box">
+            <div class="form-box property">
                 <h2>Create a Property</h2>
                 
-                <!-- <label for="type">Type:</label>
-                <select id="type">
-                    <optgroup label="Spaces">
-                        <option>Office Room</option>
-                        <option>Kitchen Space</option>
-                        <option>Training Room</option>
-                    </optgroup>
-                </select> -->
-
                 <label>Name:</label>
-                <input type="text">
+                <input type="text" id="propertyName">
 
                 <label>Description:</label>
                 <textarea id="description" placeholder="Write a description here..."></textarea>
 
-
                 <label>Address:</label>
-                <input type="text">
+                <input type="text" id="propertyAddress">
+
+                <label>Address 2:</label>
+                <input type="text" id="propertyAddress2" placeholder="Suite, Apartment, etc.">
+
+                <label>Country:</label>
+                <select id="propertyCountry">
+                    <option>Canada</option>
+                    <option>United States</option>
+                    <option>Other</option>
+                </select>
 
                 <div class="location">
-                    <label>Province</label>
-                    <select>
-                       <option>Alberta</option>
+                    <label>City</label>
+                    <select id="city-select">
+                        <option selected="selected">Select City</option>
                     </select>
 
-                    <label>City</label>
-                    <select>
-                       <option selected="selected">Select</option>
+                    <label>Province</label>
+                    <select id="province-select">
+                        <option selected="selected">Select Province</option>
+                        <option value="Alberta">Alberta</option>
+                        <option value="British Columbia">British Columbia</option>
+                        <option value="Manitoba">Manitoba</option>
+                        <option value="New Brunswick">New Brunswick</option>
+                        <option value="Nova Scotia">Nova Scotia</option>
+                        <option value="Ontario">Ontario</option>
+                        <option value="Prince Edward Island">Prince Edward Island</option>
+                        <option value="Quebec">Quebec</option>
+                        <option value="Saskatchewan">Saskatchewan</option>
+                        <option value="Northwest Territories">Northwest Territories</option>
+                        <option value="Nunavut">Nunavut</option>
+                        <option value="Yukon">Yukon</option>
                     </select>
                 </div>
 
                 <div class="postal-neighbourhood">
-                    <input type="number" id="Post">
                     <label>Postal Code</label>
+                    <input type="text" id="Post" placeholder="Enter Postal Code">
 
                     <label>Neighbourhood</label>
-                    <input type="text">
+                    <input type="text" id="neighbourhood">
                 </div>
 
                 <div class="checkbox">
@@ -73,90 +87,209 @@
                 </div>
 
                 <div class="extra">
-                    <select>
-                      <option>Yes</option>
-                      <option>No</option>
-                    </select>
-                    <label>Public Access</label>
+                    <div class="checkbox">
+                        <input type="checkbox" id="public-transport">
+                        <label for="public-transport">Public Access (Transport)</label>
+                    </div>
 
                     <label>Sqft</label>
-                    <input type="number">
+                    <input type="number" id="propertySqft">
                 </div>
 
-                <button class="save-draft property-draft">Save Draft</button>
+                <!-- Delisted Checkbox -->
+                <div class="checkbox">
+                    <input type="checkbox" id="property-delisted">
+                    <label for="property-delisted">Delisted</label>
+                </div>
 
-                
-
-                <button class="post-listing">Create Listing</button>
+                <button class="post-property">Post Listing</button>
             </div>
             
-            <div class="form-box">
+            <div class="form-box workspace">
                 <h2>Create a Workspace</h2>
                 
+                <label>Name:</label>
+                <input type="text" id="workspaceName" placeholder="Write a workspace name here..."></input>
+
                 <label for="type">Type:</label>
                 <select id="type">
                     <optgroup label="Spaces">
-                        <option>Meeting Room</option>
-                        <option>Private Office</option>
-                        <option>Open Desk</option>
+                        <option value="Meeting Room">Meeting Room</option>
+                        <option value="Private Office">Private Office</option>
+                        <option value="Open Desk">Open Desk</option>
                     </optgroup>
                 </select>
 
                 <label>Image:</label>
                 <div class="image-upload" id="drop-area">
                     <p>Drag & drop image here or click to select</p>
-                    <input type="file" id="fileinput" accept="image/*" hidden>
+                    <input type="file" id="fileinput" accept="image/*">
                     <img id="preview" src="" alt="image preview" style="display: none;">
                 </div>
 
-                <label>Description:</label>
-                <textarea id="workspaceDescription" placeholder="Write a description here..."></textarea>
-
                 <label>Price:</label>
-                <input type="number" id="price" placeholder="$ per day">
+                <input type="number" id="price" placeholder="Price per day/week/month">
 
                 <label>Address:</label>
-                <Select id="workspaceAddress">
-                    <option>Select</option>
-                </Select>
+                <select id="workspaceAddress">
+                    <option value="">Select</option>
+                </select>
 
                 <div class="checkbox">
-                    <input type="checkbox">
-                    <label>Smoking</label>
+                    <input type="checkbox" id="workspace-smoking">
+                    <label for="workspace-smoking">Smoking</label>
                 </div>
 
-                
-                <div class = "seat-availability">
+                <div class="seat-availability">
                     <label>Seat/Capacity</label>
                     <input type="text" id="capacity" placeholder="Seat capacity">
 
                     <label>Availability</label>
-                    <input type="date">
+                    <input type="date" id="workspaceAvailability">
                 </div>
 
                 <label>Lease Term</label>
-                <select>
-                    <option>Days</option>
-                    <option>Weeks</option>
-                    <option>Months</option>
+                <select id="leaseTerm">
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                </select>               
+
+                <label>Rating:</label>
+                <select id="workspaceRating">
+                    <option value="0">0</option>
+                    <option value="0.5">0.5</option>
+                    <option value="1">1</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3">3</option>
+                    <option value="3.5">3.5</option>
+                    <option value="4">4</option>
+                    <option value="4.5">4.5</option>
+                    <option value="5">5</option>
                 </select>
 
-                <button class="save-draft workspace-draft">Save Draft</button>
+                <!-- Delisted Checkbox -->
+                <div class="checkbox">
+                    <input type="checkbox" id="workspace-delisted">
+                    <label for="workspace-delisted">Delisted</label>
+                </div>
 
-               
-
-               
-
-                <button class="post-listing">Post Listing</button>
+                <button class="post-workspace">Post Workspace</button>
             </div>
         </div>
 
-
-
-        <div><h2>Available Listings:</h2></div>
+        <div><h2>Available Properties:</h2></div>
 
         <div class="listing-container"> 
             <!-- Listings will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Property Edit Modal -->
+    <div id="property-edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Edit Property</h2>
+            <form id="edit-property-form">
+                <label for="edit-property-name">Name:</label>
+                <input type="text" id="edit-property-name" placeholder="Property Name">
+
+                <label for="edit-property-neighbourhood">Neighbourhood:</label>
+                <input type="text" id="edit-property-neighbourhood" placeholder="Neighbourhood">
+
+                <label for="edit-property-address">Address:</label>
+                <input type="text" id="edit-property-address" placeholder="Address">
+
+                <label for="edit-property-address2">Address 2:</label>
+                <input type="text" id="edit-property-address2" placeholder="Suite, Apartment, etc.">
+
+                <label for="edit-property-city">City:</label>
+                <input type="text" id="edit-property-city" placeholder="City">
+
+                <label for="edit-property-province">Province:</label>
+                <input type="text" id="edit-property-province" placeholder="Province">
+
+                <label for="edit-property-country">Country:</label>
+                <input type="text" id="edit-property-country" placeholder="Country">
+
+                <label for="edit-property-postal">Postal Code:</label>
+                <input type="text" id="edit-property-postal" placeholder="Enter Postal Code">
+
+                <label for="edit-property-sqft">Sqft:</label>
+                <input type="number" id="edit-property-sqft" placeholder="Square Footage">
+
+                <div class="checkbox">
+                    <input type="checkbox" id="edit-property-garage">
+                    <label for="edit-property-garage">Garage</label>
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="edit-property-transport">
+                    <label for="edit-property-transport">Public Transport</label>
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="edit-property-delisted">
+                    <label for="edit-property-delisted">Delisted</label>
+                </div>
+
+                <button type="button" id="save-property-changes">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Workspace Edit Modal -->
+    <div id="workspace-edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-workspace-modal">&times;</span>
+            <h2>Edit Workspace</h2>
+            <form id="edit-workspace-form">
+                <label for="edit-workspace-name">Name:</label>
+                <input type="text" id="edit-workspace-name" placeholder="Workspace Name">
+
+                <label for="edit-workspace-type">Type:</label>
+                <select id="edit-workspace-type">
+                    <option value="Meeting Room">Meeting Room</option>
+                    <option value="Private Office">Private Office</option>
+                    <option value="Open Desk">Open Desk</option>
+                </select>
+
+                <label for="edit-workspace-term">Term:</label>
+                <select id="edit-workspace-term">
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                </select>
+
+                <label for="edit-workspace-capacity">Capacity:</label>
+                <input type="number" id="edit-workspace-capacity" placeholder="Capacity">
+
+                <label for="edit-workspace-price">Price:</label>
+                <input type="number" id="edit-workspace-price" placeholder="Price">
+
+                <label for="edit-workspace-rating">Rating:</label>
+                <input type="number" id="edit-workspace-rating" placeholder="Rating (1-5)" step="0.1">
+
+                <label for="edit-workspace-availability-date">Availability Date:</label>
+                <input type="date" id="edit-workspace-availability-date">
+
+                <div class="checkbox">
+                    <input type="checkbox" id="edit-workspace-smoking">
+                    <label for="edit-workspace-smoking">Smoking Allowed</label>
+                </div>
+
+                <div class="checkbox">
+                    <input type="checkbox" id="edit-workspace-delisted">
+                    <label for="edit-workspace-delisted">Delisted</label>
+                </div>
+
+                <label for="edit-workspace-image">Image:</label>
+                <input type="file" id="edit-workspace-image" accept="image/*">
+
+                <button type="button" id="save-workspace-changes">Save Changes</button>
+            </form>
         </div>
     </div>
 

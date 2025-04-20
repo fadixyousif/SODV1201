@@ -12,7 +12,6 @@
     overflow: hidden;
 }
 
-
 .form {
     display: flex;
     gap: 20px;
@@ -70,8 +69,6 @@ label, select, input, textarea {
     margin-top: 10px;
     border-radius: 5px;
 }
-
-
 
 .post-listing {
     background: green;
@@ -331,4 +328,329 @@ label, select, input, textarea {
 .form-box option, .form-box optgroup {
     background-color: white; /* Background color for options */
     color: black; /* Text color for options */
+}
+
+/* Styling for the listing container */
+.listing-container {
+    display: flex;
+    flex-direction: column;
+
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Styling for each property box */
+.property-box {
+    background: #ffffff;
+    border: 2px solid #04AA6D;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%; /* Adjust width to take up most of the container */
+    max-width: none; /* Remove fixed max-width */
+    box-sizing: border-box;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Property box header */
+.property-box h3 {
+    color: #04AA6D;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+/* Property box details */
+.property-box p {
+    margin: 5px 0;
+    color: #333;
+    font-size: 1em;
+}
+
+/* Workspace list inside property box */
+.property-box ul {
+    display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 20px 0 0 0; /* Increased margin for better spacing */
+    gap: 20px; /* Increased gap between workspace rows */
+}
+
+/* Styling for each workspace row */
+.property-box ul li {
+    display: flex;
+    flex-direction: column;
+    background: #f9f9f9;
+    border: 2px solid #ddd; /* Increased border thickness */
+    border-radius: 10px; /* Increased border radius */
+    padding: 20px; /* Increased padding for better spacing */
+    width: 250px; /* Increased width */
+    font-size: 1.1em; /* Increased font size */
+}
+
+/* Workspace details */
+.property-box ul li p {
+    margin: 8px 0; /* Increased margin for better spacing */
+    font-size: 1em; /* Adjusted font size for better readability */
+    color: #555;
+}
+
+/* No workspace message */
+.property-box p.no-workspace {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Styling for workspace buttons container */
+.workspace-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 10px;
+}
+
+/* General button styling */
+.workspace-buttons button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Edit button styling */
+.workspace-buttons .edit-workspace {
+    background-color: #04AA6D;
+    color: white;
+}
+
+.workspace-buttons .edit-workspace:hover {
+    background-color: #038e5a;
+    transform: scale(1.05);
+}
+
+/* Delist button styling */
+.workspace-buttons .delist-workspace {
+    background-color: #ffa500;
+    color: white;
+}
+
+.workspace-buttons .delist-workspace:hover {
+    background-color: #cc8400;
+    transform: scale(1.05);
+}
+
+/* Delete button styling */
+.workspace-buttons .delete-workspace {
+    background-color: #ff3333;
+    color: white;
+}
+
+.workspace-buttons .delete-workspace:hover {
+    background-color: #cc0000;
+    transform: scale(1.05);
+}
+
+/* Styling for property buttons container */
+.property-buttons {
+    display: flex;
+    justify-content: center; /* Align buttons to the left */
+    margin-top: 10px;
+    gap: 5px; /* Reduced gap between buttons */
+}
+
+/* General button styling */
+.property-buttons button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Edit button styling */
+.property-buttons .edit-property {
+    background-color: #04AA6D;
+    color: white;
+}
+
+.property-buttons .edit-property:hover {
+    background-color: #038e5a;
+    transform: scale(1.05);
+}
+
+/* Delist button styling */
+.property-buttons .delist-property {
+    background-color: #ffa500;
+    color: white;
+}
+
+.property-buttons .delist-property:hover {
+    background-color: #cc8400;
+    transform: scale(1.05);
+}
+
+/* Delete button styling */
+.property-buttons .delete-property {
+    background-color: #ff3333;
+    color: white;
+}
+
+.property-buttons .delete-property:hover {
+    background-color: #cc0000;
+    transform: scale(1.05);
+}
+
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+/* Modal content */
+.modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    max-height: 80vh; /* Limit height */
+    overflow-y: auto; /* Enable scroll inside */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close button */
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form styling inside modal */
+#edit-property-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#edit-property-form input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#save-property-changes {
+    background-color: #04AA6D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#save-property-changes:hover {
+    background-color: #038e5a;
+}
+
+/* Workspace Modal styling */
+#workspace-edit-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    overflow: hidden; /* Prevent scrolling outside the modal */
+}
+
+/* Workspace Modal content */
+#workspace-edit-modal .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%; /* Adjust width for smaller screens */
+    max-width: 600px; /* Limit the maximum width */
+    max-height: 80vh; /* Limit the maximum height */
+    overflow-y: auto; /* Enable vertical scrolling for overflowing content */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+/* Close button for workspace modal */
+#workspace-edit-modal .close-workspace-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#workspace-edit-modal .close-workspace-modal:hover,
+#workspace-edit-modal .close-workspace-modal:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Form styling inside workspace modal */
+#edit-workspace-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#edit-workspace-form input,
+#edit-workspace-form select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Save button styling */
+#save-workspace-changes {
+    background-color: #04AA6D;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#save-workspace-changes:hover {
+    background-color: #038e5a;
 }

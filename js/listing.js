@@ -391,6 +391,11 @@ $(document).ready(async function () {
                                 </div>
 
                                 <div class="detail-row">
+                                    <span class="detail-label">Transportation Available:</span>
+                                    <span class="detail-value">${property.transport ? "Yes" : "No"}</span>
+                                </div>
+
+                                <div class="detail-row">
                                     <span class="detail-label">Availability:</span>
                                     <span class="detail-value">${new Date(workspace.availability_date).toLocaleDateString()}</span>
                                 </div>

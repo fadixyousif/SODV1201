@@ -19,7 +19,7 @@ const connection = queries.connection;
 const PORT = process.env.PORT || 3000
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({limit: '50mb'}));
 
 
 app.listen(PORT, () => {
@@ -252,10 +252,10 @@ app.get('/api/user/profile/:profileID', authentication.verifyToken, async (req, 
 
 // PUT request to update user profile
 app.put('/api/user/profile', authentication.verifyToken, async (req, res) => {
-  const { username, email, phone, oldPassword, newPassword, newConfirmedPassword } = req.body;
+  const { fullname, username, email, phone, oldPassword, newPassword, newConfirmedPassword } = req.body;
 
   // Check if all fields are provided
-  if (!username || !email || !phone || !oldPassword || !newPassword || !newConfirmedPassword) {
+  if (!username || !email || !phone || !oldPassword) {
     return res.status(400).send({ message: 'All fields are required', success: false });
   }
 
@@ -287,6 +287,12 @@ app.put('/api/user/profile', authentication.verifyToken, async (req, res) => {
     const updates = [];
     const values = [];
 
+    // check if the fullname is not the same as the current fullname
+    if(fullname !== rows[0].fullname) {
+      updates.push('fullname = ?');
+      values.push(fullname);
+    }
+
     // check if the username is not the same as the current username
     if (username !== rows[0].username) {
       // check if the username already exists in the database
@@ -316,10 +322,12 @@ app.put('/api/user/profile', authentication.verifyToken, async (req, res) => {
     }
 
     // check if the new password is not the same as the old password
-    const newHashedPassword = authentication.hashPassword(newPassword, rows[0].salt);
-    if (newHashedPassword !== rows[0].password) {
-      updates.push('password = ?');
-      values.push(newHashedPassword);
+    if (newPassword !== null && newPassword !== undefined && newPassword !== '') {
+      const newHashedPassword = authentication.hashPassword(newPassword, rows[0].salt);
+      if (newHashedPassword !== rows[0].password) {
+        updates.push('password = ?');
+        values.push(newHashedPassword);
+      }
     }
 
     if (updates.length === 0) {
@@ -489,7 +497,7 @@ app.post('/api/search', authentication.verifyToken, async (req, res) => {
 // Property Management Endpoints
 // POST request to crete a new property
 app.post('/api/management/properties/property/', authentication.verifyToken, async (req, res) => {
-  const { name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport } = req.body;
+  const { name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted } = req.body;
 
   // get the user from the provided email by jwt token
   const user = await queries.getUserByEmail(req.tokenEmail.email);
@@ -522,9 +530,9 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
   }
 
   // property validation check
-  const propertyValidation = validations.isPropertyDataValid({ name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted: false });
+  const propertyValidation = validations.isPropertyDataValid({ name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted });
   if(!propertyValidation.success) {
-    return res.status(400).send({ message: 'Invalid property data', success: false });
+    return res.status(400).send(propertyValidation);
   }
 
   // Check if a property with the same name and address already exists
@@ -535,9 +543,9 @@ app.post('/api/management/properties/property/', authentication.verifyToken, asy
   // try handle the property creation process and error handling
   try {
     // make a sql variable to insert the new property into the database using the connection pool and provided values
-    const sql = 'INSERT INTO `properties` (ownerID, name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted) VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 0)';
+    const sql = 'INSERT INTO `properties` (ownerID, name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
     // execute the sql query with the provided values and get the result
-    const [rows, fields] = await connection.execute(sql, [user.id, name, address, address2, province, city, country, postal, neighbourhood, garage ? 1 : 0, sqft, transport ? 1 : 0]);
+    const [rows, fields] = await connection.execute(sql, [user.id, name, address, address2, province, city, country, postal, neighbourhood, garage ? 1 : 0, sqft, transport ? 1 : 0, delisted ? 1 : 0]);
     
     // check if the property was inserted successfully and send a success message with the propertyID
     if (rows.affectedRows > 0) {
@@ -590,7 +598,7 @@ app.put('/api/management/properties/property', authentication.verifyToken, async
   // property validation check
   const propertyValidation = validations.isPropertyDataValid({ name, address, address2, province, city, country, postal, neighbourhood, garage, sqft, transport, delisted });
   if(!propertyValidation.success) {
-    return res.status(400).send({ message: 'Invalid property data', success: false });
+    return res.status(400).send(propertyValidation);
   }
 
   // check if the property exists
@@ -789,12 +797,12 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
   }
 
   // check if all the required fields are provided
-  if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || !image || delisted === undefined) {
+  if (!name || !type || !term || !capacity || !price || !propertyID || !rating || !image || delisted === undefined) {
     return res.status(400).send({ message: 'All fields are required', success: false });
   }
 
   // workspace validation check
-  const workspaceValidation = validations.isWorkspaceDataValid({ name, type, term, sqft, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted });
+  const workspaceValidation = validations.isWorkspaceDataValid({ name, type, term, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted });
   if(!workspaceValidation.success) {
     return res.status(400).send(workspaceValidation);
   }
@@ -836,7 +844,7 @@ app.post('/api/management/workspaces/workspace', authentication.verifyToken, asy
 
 // PUT request to edit a workspace
 app.put('/api/management/workspaces/workspace', authentication.verifyToken, async (req, res) => {
-  const { name, type, term, sqft, capacity, price, propertyID, rating, delisted, workspaceID, image, smoking_allowed, avalability_date } = req.body;
+  const { name, type, term, capacity, price, propertyID, rating, delisted, workspaceID, image, smoking_allowed, avalability_date } = req.body;
   
     // get the user from the provided email by jwt token
     const user = await queries.getUserByEmail(req.tokenEmail.email);
@@ -863,12 +871,12 @@ app.put('/api/management/workspaces/workspace', authentication.verifyToken, asyn
     }
 
     // check if all the required fields are provided
-    if (!name || !type || !term || !sqft || !capacity || !price || !propertyID || !rating || delisted === undefined) {
+    if (!name || !type || !term || !capacity || !price || !propertyID || !rating || delisted === undefined) {
       return res.status(400).send({ message: 'All fields are required', success: false });
     }
 
     // workspace validation check
-    const workspaceValidation = validations.isWorkspaceDataValid({ name, type, term, sqft, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted });
+    const workspaceValidation = validations.isWorkspaceDataValid({ name, type, term, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted });
     if(!workspaceValidation.success) {
       return res.status(400).send(workspaceValidation);
     }

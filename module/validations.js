@@ -69,21 +69,22 @@ function isUpdatedDataProfileValid(user) {
         return { message: 'Password must be between 8 and 20 characters', success: false }
     }
 
-    // check new password length is between 8 and 20 characters
-    if (newPassword.length < 8 || newPassword.length > 20 && newConfirmedPassword.length < 8 || newConfirmedPassword.length > 20) {
-        return { message: 'New password must be between 8 and 20 characters', success: false }
-    }
+    if ((newPassword !== null && newPassword !== undefined && newPassword !== '') && (oldPassword !== null && oldPassword !== undefined && oldPassword !== '') && (newConfirmedPassword !== null && newConfirmedPassword !== undefined && newConfirmedPassword !== '')) {
+        // check new password length is between 8 and 20 characters
+        if (newPassword.length < 8 || newPassword.length > 20 && newConfirmedPassword.length < 8 || newConfirmedPassword.length > 20) {
+            return { message: 'New password must be between 8 and 20 characters', success: false }
+        }
 
-    // check if new password and confirmed password are same
-    if (newPassword !== newConfirmedPassword) {
-        return { message: 'New password and confirmed password do not match', success: false }
-    }
+        // check if new password and confirmed password are same
+        if (newPassword !== newConfirmedPassword) {
+            return { message: 'New password and confirmed password do not match', success: false }
+        }
 
-    // check if old password and new password are same
-    if (oldPassword == newPassword && oldPassword == newConfirmedPassword) {
-        return { message: 'New password cannot be same as old password', success: false }
+        // check if old password and new password are same
+        if (oldPassword == newPassword && oldPassword == newConfirmedPassword) {
+            return { message: 'New password cannot be same as old password', success: false }
+        }
     }
-
     // check if email is valid
     if(!isValidEmail(email)) {
         return { message: 'Invalid email format', success: false }
@@ -112,13 +113,13 @@ function isPropertyDataValid(property) {
     }
 
     // check if the address is not empty
-    if (address.length < 4 || address.length > 20) {
+    if (address.length < 4 || address.length > 255) {
         return { message: 'Address must be between 4 and 20 characters', success: false }
     }
 
     // check if the address2 is not empty
     if (address2.length !== 0) {
-        if (address2.length < 4 || address2.length > 20) {
+        if (address2.length < 4 || address2.length > 255) {
             return { message: 'Address2 must be between 4 and 20 characters', success: false }
         }
     }
@@ -153,10 +154,10 @@ function isPropertyDataValid(property) {
 
 // similar to isPropertyValid but for workspace data
 function isWorkspaceDataValid(workspace) {
-    const { name, type, term, sqft, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted } = workspace;
+    const { name, type, term, capacity, price, propertyID, rating, smoking_allowed, avalability_date, image, delisted } = workspace;
 
     // check types of the workspace
-    if (typeof name !== 'string' || typeof type !== 'string' || typeof term !== 'string' || typeof sqft !== 'number' || typeof capacity !== 'number' || typeof price !== 'number' || typeof propertyID !== 'number' || typeof rating !== 'number' || typeof smoking_allowed !== 'boolean' || typeof avalability_date !== 'string' || typeof image !== 'string' || typeof delisted !== 'boolean') {
+    if (typeof name !== 'string' || typeof type !== 'string' || typeof term !== 'string' || typeof capacity !== 'number' || typeof price !== 'number' || typeof propertyID !== 'number' || typeof rating !== 'number' || typeof smoking_allowed !== 'boolean' || typeof avalability_date !== 'string' || typeof image !== 'string' || typeof delisted !== 'boolean') {
         return { message: 'Invalid workspace data type', success: false }
     }
 
@@ -174,12 +175,7 @@ function isWorkspaceDataValid(workspace) {
     if (term.length < 4 || term.length > 20) {
         return { message: 'Term must be between 4 and 20 characters', success: false }
     }
-
-    // check if the sqft is not empty
-    if (sqft < 0) {
-        return { message: 'Sqft must be greater than or equal to 0', success: false }
-    }
-
+    
     // check if the capacity is not empty
     if (capacity < 0) {
         return { message: 'Capacity must be greater than or equal to 0', success: false }

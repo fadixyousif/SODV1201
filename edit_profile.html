@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./js/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.min.js"></script>
+    <script src="./js/config.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/edit_profile.js"></script>
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/edit_profile.css">
+</head>
+<body>
+    <ul class="nav">
+        <span class="company-name"><a href="#">RentableBnB</a></span>
+        <div class="navigation" id="nav-items">
+            <li><a href="#">Home</a></li>
+            <li><a href="listing.html">Listing</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li id="auth-link"><a href="authentication.html" class="active">Login/Signup</a></li>
+        </div>
+    </ul>
+
+    <div class="profile-body">
+        <div class="profile-update-container">
+            <h1>Update Profile</h1>
+            <form id="update-profile-form">
+                <div class="form-group">
+                    <label for="fullname">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                </div>
+                <div class="form-group">
+                    <label for="oldPassword">Old Password</label>
+                    <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter your old password" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Enter your new password">
+                </div>
+                <div class="form-group">
+                    <label for="newConfirmedPassword">Confirm New Password</label>
+                    <input type="password" id="newConfirmedPassword" name="newConfirmedPassword" placeholder="Confirm your new password">
+                </div>
+                <button type="submit" class="update-btn">Update Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer-content">
+        <footer>
+          <p>© <span class="current-date">2025</span> Group 4. All Rights Reserved. </p>
+        </footer>
+    </div>
+</body>
+</html>

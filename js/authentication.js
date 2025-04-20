@@ -59,7 +59,14 @@ async function loginUser(userData) {
             localStorage.setItem('auth-token', result.token);
 
             // Redirect to the dashboard or another page
-            window.location.href = 'management.html';
+            if (result.role === 'owner') {
+                window.location.href = 'management.html';
+            }
+            else if (result.role === 'coworker') {
+                window.location.href = 'listing.html';
+            } else {
+                showNotification('error', 'Error', 'Invalid role. Please contact support.');
+            }
         } else {
             showNotification('error', 'Login Failed', result.message || 'Invalid username or password.');
         }

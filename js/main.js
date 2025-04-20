@@ -8,11 +8,26 @@ $(async function(){
           }
       });
   
+      if (response.status === 401) {
+          // User is not authenticated, redirect to login page
+          if (($('.edit-profile-body').length > 0) || ($('.listing-body').length > 0) || ($('.management-body').length > 0)) { 
+            window.location.replace('/authentication.html');
+            return;
+          }
+      }
+
       const user = await response.json();
   
       if (user.success) {
           const { name, role } = user;
   
+          if ($('.management-body').length > 0) {
+            if (role !== 'owner') {
+              window.location.replace('/index.html');
+              return;
+            }
+          }
+
           // Update navigation bar
           const navItems = $('#nav-items');
           $('#auth-link').remove(); // Remove Login/Signup link

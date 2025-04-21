@@ -105,7 +105,6 @@ function renderListings(properties) {
                 <p><strong>Delisted:</strong> ${property.delisted ? "Yes" : "No"}</p>
                 <div class="property-buttons">
                     <button class="edit-property" data-property-id="${property.propertyID}">Edit</button>
-                    <button class="delist-property" data-property-id="${property.propertyID}">${property.delisted ? "Relist" : "Delist"}</button>
                     <button class="delete-property" data-property-id="${property.propertyID}">Delete</button>
                 </div>
                 <h4>Available Workspaces:</h4>
@@ -134,7 +133,6 @@ function renderListings(properties) {
                         <p><strong>Delisted:</strong> ${workspace.delisted ? "Yes" : "No"}</p>
                         <div class="workspace-buttons">
                             <button class="edit-workspace" data-property-id="${workspace.propertyID}" data-workspace-id="${workspace.workspaceID}">Edit</button>
-                            <button class="delist-workspace" data-workspace-id="${workspace.workspaceID}">${workspace.delisted ? "Relist" : "Delist"}</button>
                             <button class="delete-workspace" data-workspace-id="${workspace.workspaceID}">Delete</button>
                         </div>
                     </li>

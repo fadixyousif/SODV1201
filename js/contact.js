@@ -1,3 +1,19 @@
+// Universal notification function
+function showNotification(status, title, text) {
+    new Notify({
+        status: status, // 'success', 'error', 'warning', etc.
+        title: title,
+        text: text,
+        effect: 'fade',
+        speed: 300,
+        showIcon: true,
+        showCloseButton: true,
+        autoclose: true,
+        autotimeout: 3000,
+        position: 'right top'
+    });
+}
+
 $(document).ready(function () {
     $(".submit-btn").on("click", function (event) {
         event.preventDefault(); // Prevent form submission
@@ -28,9 +44,10 @@ $(document).ready(function () {
         }
 
         if (errors.length > 0) {
-            alert("Please fix the following errors:\n" + errors.join("\n"));
+            showNotification('error', 'Validation Error', "Please fix the following errors:<br>" + errors.join("<br>"));
         } else {
-            alert("Message sent successfully!\n" +
+            showNotification('success', 'Message Sent', 
+                `Message sent successfully!\n` +
                 `Name: ${name}\n` +
                 `Email: ${email}\n` +
                 `Phone: ${phone}\n` +

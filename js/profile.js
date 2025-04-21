@@ -1,3 +1,16 @@
+function convertToBase64(data) {
+    const CHUNK_SIZE = 10000; // Process 10,000 bytes at a time
+    let base64String = "";
+
+    for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+        const chunk = data.slice(i, i + CHUNK_SIZE); // Get a chunk of the data
+        base64String += String.fromCharCode.apply(null, chunk); // Convert the chunk to base64
+    }
+
+    return base64String;
+}
+
+
 $(document).ready(async function () {
     // Use api_url from config.js
     if (typeof api_url === "undefined") {
@@ -83,7 +96,7 @@ $(document).ready(async function () {
                         return property.workspaces.map(workspace => `
                             <div class="item">
                                 <div class="item-picture">
-                                    <img src="./img/landing/offices.png" alt="${workspace.name}">
+                                    <img src="${convertToBase64(workspace.image.data)}" alt="${workspace.name}">
                                 </div>
                                 <div class="item-details">
                                     <div class="detail-row">

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.css" />
+    <script src="https://cdn.jsdelivr.net/npm/simple-notify/dist/simple-notify.min.js"></script>
     <script src="./js/jquery-3.7.1.min.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/contact.js" defer></script>
@@ -13,11 +15,11 @@
 <body>
     <ul class="nav">
         <span class="company-name"><a href="#">RentableBnB</a></span>
-        <div class="navigation">
+        <div class="navigation" id="nav-items">
             <li><a href="./index.html">Home</a></li>
             <li><a href="listing.html">Listing</a></li>
             <li><a href="#">Contact</a></li>
-            <li><a href="authentication.html" class="active">Login/Signup</a></li>
+            <li id="auth-link"><a href="authentication.html" class="active">Login/Signup</a></li>
         </div>
     </ul>
 

@@ -1,0 +1,224 @@
+/* Profile Page Styling */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-flex {
+    display: flex;
+}
+
+.profile-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.profile-name {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.contact-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.contact-info p {
+    margin: 5px 0;
+    font-size: 1.2rem;
+}
+
+/* Remove underline and set color to black */
+.contact-info a {
+    text-decoration: none;
+    color: black;
+}
+
+/* Change color to blue on hover */
+.contact-info a:hover {
+    color: blue;
+}
+
+.section-divider {
+    border: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+/* Updated Property List Styling (Responsive Grid) */
+
+.property-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+  gap: 20px; /* Space between items */
+  padding: 20px;
+  flex-grow: 1; /* Allow the property list to grow and take available space */
+  padding-bottom: 20px; /* Add padding to prevent overlap with the footer */
+}
+
+.property-list .item {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.property-list .item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.item-picture {
+  background-color: #f9f9f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  overflow: hidden;
+}
+
+.item-picture img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.item-details {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #555;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.detail-value {
+  text-align: right;
+  color: #666;
+}
+
+.detail-rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detail-rating .stars {
+  color: #f39c12;
+}
+
+.detail-rating .rating-value {
+  color: #555;
+}
+
+.item-footer {
+  margin-top: auto;
+  padding: 10px 15px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #2e856e;
+}
+
+@media (max-width: 768px) {
+  .property-list {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+.workspace-item {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column; /* Ensure vertical layout for individual items */
+}
+
+.workspace-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.workspace-image {
+    flex: 1; /* Allow the image section to take up equal space */
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #888;
+    padding: 10px;
+    text-align: center;
+    height: 150px; /* Fixed height for uniformity */
+}
+
+.workspace-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.workspace-details {
+    flex: 2; /* Allow the details section to take up more space */
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.workspace-details h3 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.workspace-details p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.workspace-details p strong {
+    color: #000;
+}
+
+.redirect-link {
+  color: #2e856e; /* Change to your desired color */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.redirect-link:hover {
+  color: #1d5849; /* Darker shade for hover */
+  text-decoration: underline; /* Optional: Add underline on hover */
+}
+
+.error-message h1 {
+    text-align: center;
+}
+

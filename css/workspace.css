@@ -1,0 +1,118 @@
+/* Global */
+html, body {
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Container */
+.workspace-container {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e5e5;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+/* Card structure */
+.workspace-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Top section: image + workspace info */
+.workspace-top {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+/* Image section */
+.workspace-image {
+    flex: 1;
+    min-width: 320px;
+    max-width: 480px;
+    flex-shrink: 0;
+}
+
+.workspace-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    object-fit: cover;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+/* Workspace info */
+.workspace-info {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 16px;
+    color: #333;
+}
+
+.workspace-info p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.workspace-info strong {
+    font-weight: 600;
+    color: #111;
+}
+
+.workspace-header {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 6px;
+}
+
+.workspace-header h2 {
+    font-size: 24px;
+    margin: 0;
+    color: #222;
+}
+
+.workspace-type {
+    font-size: 14px;
+    color: #777;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Property address block below */
+.workspace-address {
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.workspace-address h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Optional: Add hover effect for links */
+a:hover {
+    text-decoration: underline;
+    color: #007BFF; /* Optional hover color */
+}

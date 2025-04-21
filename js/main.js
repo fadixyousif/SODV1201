@@ -10,7 +10,7 @@ $(async function(){
   
       if (response.status === 401) {
           // User is not authenticated, redirect to login page
-          if (($('.edit-profile-body').length > 0) || ($('.listing-body').length > 0) || ($('.management-body').length > 0)) { 
+          if (($('.edit-profile-body').length > 0) || ($('.listing-body').length > 0) || ($('.management-body').length > 0) || ($('.workspace-body').length > 0) || ($('.profile-body').length > 0) ) { 
             window.location.replace('/authentication.html');
             return;
           }

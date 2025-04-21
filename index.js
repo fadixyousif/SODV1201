@@ -140,7 +140,7 @@ app.post('/api/users/login', async (req, res) => {
         }); 
 
         // return the token and a success message
-        res.status(201).send({ message: `Welcome ${rows[0].fullname}`, token, success: true});
+        res.status(201).send({ message: `Welcome ${rows[0].fullname}`, token, role: rows[0].role, success: true});
     } else {
       return res.status(401).send({ message: 'Invalid username or password', success: false });
     }

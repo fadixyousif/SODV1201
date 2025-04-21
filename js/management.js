@@ -381,8 +381,7 @@ $(document).on("click", "#save-workspace-changes", async function () {
         }
     }
 
-    // Use the original image if no new image is uploaded
-    const imageToUpdate = base64Image || convertToBase64(originalWorkspace.image.data);
+    const imageToUpdate = base64Image || (originalWorkspace.image?.data ? convertToBase64(originalWorkspace.image.data) : "./img/not-available.png");
 
     // Create the updatedWorkspace object with proper type conversions
     const updatedWorkspace = {
@@ -483,7 +482,7 @@ $(document).on("click", "#save-workspace-changes", async function () {
             const $workspaceItem = $(`li[data-workspace-id="${workspaceId}"]`);
 
             if ($workspaceItem.length > 0) {
-                $workspaceItem.find("img").attr("src", updatedWorkspace.image);
+                $workspaceItem.find("img").attr("src", updatedWorkspace.image || "./img/not-available.png");
                 $workspaceItem.find("p:contains('Name:')").html(`<strong>Name:</strong> ${updatedWorkspace.name}`);
                 $workspaceItem.find("p:contains('Type:')").html(`<strong>Type:</strong> ${updatedWorkspace.type}`);
                 $workspaceItem.find("p:contains('Term:')").html(`<strong>Term:</strong> ${updatedWorkspace.term}`);

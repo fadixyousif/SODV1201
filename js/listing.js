@@ -193,7 +193,7 @@ $(document).ready(async function () {
             workspace: {
                 workspaceName: sanitizeInput($('.search-box').val()),
                 type: getActiveOptionValue('.property-grid .property-type'),
-                capacity: getActiveOptionValue('.filter-section:nth-of-type(11) .option'),
+                capacity: sanitizeInput($('#capacity').val(), true),
                 term: getActiveOptionValue('.filter-section:nth-of-type(18) .option'),
                 min_price: sanitizeInput($('#min-price').val(), true),
                 max_price: sanitizeInput($('#max-price').val(), true),
@@ -373,4 +373,34 @@ $(document).ready(async function () {
             $itemGrid.html('<p class="error-message">No results found.</p>');
         }
     }
+
+    // Listen for changes in the sort dropdown
+    $('#sort-options').on('change', function () {
+        const sortOption = $(this).val(); // Get the selected sort option
+        const currentFilters = collectFilters(); // Collect the current filters
+
+        // Fetch the current results and re-sort them
+        fetch(`${api_url}/api/search`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('auth-token')
+            },
+            body: JSON.stringify(currentFilters)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const sortedResults = sortResults(data.results, sortOption); // Sort the results
+            displayResults(sortedResults); // Display the sorted results
+        })
+        .catch(error => {
+            console.error('Error fetching sorted data:', error);
+            $('.item-grid').html('<p class="error-message">An error occurred while sorting workspaces. Please try again later.</p>');
+        });
+    });
 });
